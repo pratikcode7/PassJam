@@ -1,0 +1,741 @@
+<title>The Jamali Job</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: product-style app shell. Sticky nav, compact hero, then vault card (left) + password console (right); stacks on phones. Single dark look by choice. */
+:root {
+  color-scheme: dark;
+  --background: #09090b;
+  --card: #0e0e11;
+  --card-2: #18181b;
+  --border: #27272a;
+  --border-2: #3f3f46;
+  --fg: #fafafa;
+  --muted: #a1a1aa;
+  --subtle: #71717a;
+  --primary: #f59e0b;
+  --primary-hi: #fcd34d;
+  --primary-fg: #0a0a0a;
+  --primary-soft: #2a1d06;
+  --success: #22c55e;
+  --success-soft: #0b2716;
+  --danger: #ef4444;
+  --danger-soft: #2b0f10;
+  --font-sans: "Geist", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", "Consolas", ui-monospace, monospace;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0; background: var(--background); color: var(--fg);
+  font-family: var(--font-sans); font-size: 14px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased; overflow-x: clip;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--background); }
+.bg { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(600px 300px at 50% -40px, var(--primary-soft), transparent 70%),
+    linear-gradient(var(--border) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(90deg, var(--border) 1px, transparent 1px) 0 0 / 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, #000 30%, transparent 75%);
+  opacity: .55;
+}
+.ic { width: 16px; height: 16px; flex: none; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* Nav */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(9, 9, 11, .72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; }
+.logo { display: flex; align-items: center; gap: 10px; color: var(--fg); text-decoration: none; font-weight: 600; font-size: 15px; letter-spacing: -.01em; }
+.logo-mark { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: var(--primary-fg); background: linear-gradient(135deg, var(--primary-hi), var(--primary)); box-shadow: 0 0 0 1px rgba(255, 255, 255, .08) inset, 0 4px 14px rgba(245, 158, 11, .25); }
+.badge { display: inline-flex; align-items: center; gap: 6px; font: 500 11px var(--font-mono); padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border-2); color: var(--muted); white-space: nowrap; }
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.timer { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); font-family: var(--font-mono); }
+.timer .lbl { color: var(--muted); font-size: 12px; }
+.timer strong { font-weight: 600; font-variant-numeric: tabular-nums; }
+.timer.alarm { border-color: var(--danger); color: var(--danger); background: var(--danger-soft); animation: pulse 1s infinite; }
+.timer.alarm .lbl { color: var(--danger); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 8px; font: 500 13px var(--font-sans); cursor: pointer; border: 1px solid var(--border); background: var(--card); color: var(--fg); transition: background .15s, border-color .15s, color .15s; }
+.btn:hover { background: var(--card-2); border-color: var(--border-2); }
+.btn.icon { width: 36px; padding: 0; }
+.btn.primary { background: var(--fg); color: var(--primary-fg); border-color: var(--fg); }
+.btn.primary:hover { background: var(--primary-hi); border-color: var(--primary-hi); }
+.btn.sm { height: 30px; padding: 0 10px; font-size: 12px; }
+.btn:focus-visible, textarea:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+/* Hero */
+.hero { padding-block: 44px 24px; text-align: center; display: grid; justify-items: center; gap: 14px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 6px; border-radius: 999px; border: 1px solid var(--border); background: var(--card); font-size: 12px; color: var(--muted); }
+.pill .tag { background: var(--primary-soft); color: var(--primary-hi); border-radius: 999px; padding: 1px 8px; font-weight: 500; }
+.hero h1 { margin: 0; font-size: clamp(32px, 5.4vw, 56px); line-height: 1.05; letter-spacing: -.035em; font-weight: 700; text-wrap: balance; }
+.grad { background: linear-gradient(180deg, var(--primary-hi), var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p { margin: 0; max-width: 58ch; color: var(--muted); font-size: 16px; text-wrap: balance; }
+
+.alert { display: flex; gap: 12px; align-items: flex-start; max-width: 760px; margin: 0 auto 28px; padding: 12px 16px; border-radius: var(--radius); border: 1px solid #5c3d07; background: var(--primary-soft); color: var(--primary-hi); }
+.alert .ic { margin-top: 2px; }
+.alert p { margin: 0; color: var(--fg); }
+.alert strong { color: var(--primary-hi); font-weight: 600; }
+
+/* Main grid */
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: 20px; padding-bottom: 56px; align-items: start; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); min-width: 0; }
+.card-head { padding: 18px 20px 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.card-head h2 { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+.card-head p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+.card-body { padding: 18px 20px 20px; }
+.vault-card { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px); }
+
+/* Stepper */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.step { position: relative; display: grid; justify-items: center; gap: 6px; text-align: center; min-width: 0; }
+.step::before { content: ""; position: absolute; top: 14px; left: calc(-50% + 18px); right: calc(50% + 18px); height: 2px; background: var(--border); border-radius: 2px; }
+.step:first-child::before { display: none; }
+.step[data-state="cracked"]::before, .step[data-state="working"]::before { background: var(--primary); }
+.step-dot { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 600 11px var(--font-mono); border: 1px solid var(--border-2); background: var(--card-2); color: var(--muted); }
+.step[data-state="working"] .step-dot { border-color: var(--primary); color: var(--primary-hi); box-shadow: 0 0 0 4px var(--primary-soft); }
+.step[data-state="cracked"] .step-dot { background: var(--primary); border-color: var(--primary); color: var(--primary-fg); }
+.step b { display: block; font-size: 12px; font-weight: 500; line-height: 1.25; }
+.step small { display: block; font-size: 11px; color: var(--subtle); }
+
+/* Vault */
+.vault { position: relative; width: 100%; max-width: 430px; margin: 18px auto 4px; aspect-ratio: 1; perspective: 1600px; }
+.interior { position: absolute; inset: 3.5%; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 50% 42%, var(--primary-hi) 0%, var(--primary) 20%, var(--primary-soft) 48%, var(--background) 74%); box-shadow: inset 0 0 60px var(--background), 0 0 0 8px var(--card-2), 0 0 0 9px var(--border-2); }
+.loot { position: absolute; inset: auto 24% 26%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.loot i { display: block; height: 20px; background: linear-gradient(var(--primary-hi), var(--primary) 60%, #92400e); clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%); }
+.door { position: absolute; inset: 0; transform-origin: 4% 50%; transition: transform 2.4s cubic-bezier(.6, .05, .25, 1); filter: drop-shadow(0 20px 28px rgba(0, 0, 0, .7)); }
+.door svg { display: block; width: 100%; height: 100%; }
+.vault.open .door { transform: rotateY(-80deg); }
+.bolt { transition: transform 1s cubic-bezier(.5, 0, .3, 1); transform-box: fill-box; }
+.vault.unbolt .bolt { transform: translateY(22px); }
+#dial, #handle { transform-box: view-box; transform-origin: 220px 220px; }
+.pin .pin-rect { fill: #3f3f46; transition: transform .25s cubic-bezier(.3, 1.6, .5, 1), fill .2s; transform-box: fill-box; }
+.pin[data-state="fail"] .pin-rect { fill: #7f1d1d; }
+.pin[data-state="pass"] .pin-rect { fill: var(--primary-hi); transform: translateY(-6px); filter: url(#glow); }
+.pin[data-state="hidden"] .pin-rect { fill: var(--card); stroke: var(--border-2); stroke-dasharray: 2 2; }
+.pin.flash .pin-rect { fill: var(--fg); }
+.shake { animation: shake .45s; }
+
+/* Comms */
+.comms { display: flex; gap: 12px; align-items: flex-start; padding: 16px 20px; border-top: 1px solid var(--border); }
+.avatar { width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; font: 600 12px var(--font-mono); background: var(--card-2); border: 1px solid var(--border-2); color: var(--primary-hi); position: relative; }
+.avatar::after { content: ""; position: absolute; right: -1px; bottom: -1px; width: 9px; height: 9px; border-radius: 50%; background: var(--success); border: 2px solid var(--card); }
+.bubble { min-width: 0; flex: 1; }
+.bubble .who { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; }
+.bubble .who span { color: var(--subtle); font-weight: 400; font-size: 12px; }
+.bubble p { margin: 3px 0 0; color: var(--muted); min-height: 3em; }
+.comms.talking .bubble p::after { content: "▍"; color: var(--primary); animation: blink .8s infinite; }
+
+/* Password card */
+.field-label { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+.field-label span { color: var(--subtle); font-weight: 400; font-size: 12px; }
+textarea {
+  width: 100%; display: block; resize: none;
+  font: 500 19px/1.45 var(--font-mono); letter-spacing: .02em; color: var(--fg); caret-color: var(--primary);
+  background: var(--background); border: 1px solid var(--border-2); border-radius: 10px; padding: 12px 14px;
+  word-break: break-all; transition: border-color .15s, box-shadow .15s;
+}
+textarea::placeholder { color: var(--subtle); }
+textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); outline: none; }
+textarea:disabled { opacity: .7; }
+.stats-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+.stat { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--background); min-width: 0; }
+.stat small { display: block; font-size: 11px; color: var(--subtle); }
+.stat b { font: 600 18px var(--font-mono); font-variant-numeric: tabular-nums; }
+.stat .ok { color: var(--success); font: 500 11px var(--font-sans); margin-left: 6px; }
+.progress { margin-top: 16px; }
+.progress-top { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.progress-top b { color: var(--fg); font-weight: 500; font-family: var(--font-mono); }
+.bar { height: 6px; border-radius: 999px; background: var(--card-2); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--primary), var(--primary-hi)); transition: width .3s ease; }
+
+/* Rules */
+.rules-head { display: flex; justify-content: space-between; align-items: baseline; margin: 22px 2px 10px; }
+.rules-head h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.rules-head span { font-size: 12px; color: var(--subtle); }
+.rules { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.rule { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); transition: border-color .2s, background .2s; }
+.rule .state { margin-top: 1px; }
+.rule .state .ic { width: 18px; height: 18px; }
+.rule .yes { display: none; color: var(--success); }
+.rule .no { color: var(--danger); }
+.rule[data-state="pass"] .yes { display: block; }
+.rule[data-state="pass"] .no { display: none; }
+.rule[data-state="pass"] { border-color: #14532d; background: linear-gradient(var(--success-soft), var(--card) 70%); }
+.rule-main { min-width: 0; flex: 1; }
+.rule-top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.rule-top b { font-size: 13px; font-weight: 600; }
+.rule p { margin: 4px 0 0; color: var(--muted); }
+.rule p strong { color: var(--fg); font-weight: 500; }
+.rule p em { color: var(--primary-hi); font-style: normal; }
+.rule code { font-family: var(--font-mono); font-size: 12px; background: var(--card-2); border: 1px solid var(--border); padding: 1px 6px; border-radius: 5px; color: var(--fg); }
+.rule.sab { border-color: #7f1d1d; background: linear-gradient(var(--danger-soft), var(--card) 80%); }
+.rule.sab[data-state="pass"] { border-color: #14532d; background: linear-gradient(var(--success-soft), var(--card) 70%); }
+.rule.fresh { animation: fresh 1.4s ease-out; }
+.badge.amber { border-color: #5c3d07; color: var(--primary-hi); background: var(--primary-soft); }
+.badge.red { border-color: #7f1d1d; color: #fca5a5; background: var(--danger-soft); }
+.extra { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px; }
+.notes { display: flex; gap: 4px; }
+.notes span { font: 500 11px var(--font-mono); width: 22px; text-align: center; padding: 3px 0; border-radius: 5px; background: var(--card-2); border: 1px solid var(--border); color: var(--muted); transition: background .1s, color .1s; }
+.notes span.on { background: var(--primary); border-color: var(--primary); color: var(--primary-fg); }
+.dots { display: flex; gap: 8px; }
+.dots span { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--border-2); display: grid; place-items: center; font: 600 9px var(--font-mono); color: var(--subtle); }
+.dots span.one { background: var(--primary-hi); border-color: var(--primary-hi); }
+.dots span.zero { border-color: var(--primary); }
+
+footer { border-top: 1px solid var(--border); padding-block: 22px; color: var(--subtle); font-size: 12px; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+
+/* Toasts */
+.toasts { position: fixed; z-index: 45; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 8px; width: min(360px, calc(100vw - 32px)); }
+.toast { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background: var(--card-2); border: 1px solid var(--border-2); box-shadow: 0 10px 30px rgba(0, 0, 0, .5); animation: toastIn .25s ease-out; }
+.toast .ic { margin-top: 2px; }
+.toast b { display: block; font-size: 13px; font-weight: 600; }
+.toast span { display: block; font-size: 12px; color: var(--muted); }
+.toast.good .ic { color: var(--success); } .toast.warn .ic { color: var(--primary); } .toast.bad .ic { color: var(--danger); }
+.toast.out { opacity: 0; transform: translateY(6px); transition: opacity .25s, transform .25s; }
+
+/* Result dialog + effects */
+#coins { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 40; }
+#flash { position: fixed; inset: 0; pointer-events: none; z-index: 35; background: radial-gradient(ellipse at center, transparent 35%, var(--danger) 130%); opacity: 0; }
+body.busted #flash { animation: redflash .5s 6 alternate; }
+.overlay { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(0, 0, 0, .6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); padding: 20px max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px)); }
+.dialog { width: min(440px, 100%); background: var(--card); border: 1px solid var(--border-2); border-radius: 16px; padding: 24px; box-shadow: 0 30px 80px rgba(0, 0, 0, .6); display: grid; gap: 6px; }
+.dialog .badge { justify-self: start; }
+.dialog h2 { margin: 8px 0 0; font-size: 30px; font-weight: 700; letter-spacing: -.03em; }
+.dialog p { margin: 0 0 14px; color: var(--muted); }
+.dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0 0 18px; }
+.dl div { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--background); }
+.dl dt { font-size: 11px; color: var(--subtle); }
+.dl dd { margin: 2px 0 0; font: 600 20px var(--font-mono); font-variant-numeric: tabular-nums; }
+.dialog .btn { width: 100%; height: 40px; }
+
+@keyframes pulse { 50% { box-shadow: 0 0 0 4px var(--danger-soft); } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px) rotate(-1deg); } 40% { transform: translateX(7px) rotate(1deg); } 60% { transform: translateX(-5px); } 80% { transform: translateX(4px); } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes fresh { from { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); } }
+@keyframes toastIn { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+@keyframes redflash { to { opacity: .8; } }
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .vault-card { position: static; }
+  .vault { max-width: 340px; }
+}
+@media (max-width: 520px) {
+  .logo .badge, .timer .lbl, #resetBtn span { display: none; }
+  #resetBtn { width: 36px; padding: 0; }
+  .step small { display: none; }
+  .hero { padding-top: 32px; }
+  .hero p { font-size: 15px; }
+  textarea { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+  .door { transition-duration: .6s; }
+}
+</style>
+
+<div class="bg" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" id="top">
+      <span class="logo-mark"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+      <span>Jamali Job</span>
+      <span class="badge">v1.0</span>
+    </a>
+    <div class="nav-right">
+      <div class="timer" id="eta" title="Time until Interpol arrives">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg>
+        <span class="lbl">Interpol in</span><strong id="etaTime">07:00</strong>
+      </div>
+      <button class="btn icon" id="soundBtn" type="button" aria-pressed="true" aria-label="Mute sound" title="Sound"></button>
+      <button class="btn" id="resetBtn" type="button" aria-label="Restart the job">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg><span>Restart</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="pill"><span class="tag">Puzzle Passwords</span>Built by team Jamil Jamali</span>
+    <h1>Crack the vault.<br><span class="grad">One rule at a time.</span></h1>
+    <p>Every rule is a tumbler. Type one password that sets them all, open four legendary safes, and get out before Interpol arrives.</p>
+  </section>
+
+  <div class="alert" role="note">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+    <p><strong>This is a game, not a login.</strong> Never type a real password here. Nothing you type is saved or sent anywhere.</p>
+  </div>
+
+  <div class="grid">
+    <section class="card vault-card" aria-label="The vault">
+      <div class="card-head">
+        <div><h2>The Vault</h2><p id="vaultSub">Safe I of IV · The Gold, Paris</p></div>
+        <span class="badge amber" id="pinCount">0 / 12 pins</span>
+      </div>
+      <div class="card-body">
+        <ol class="steps" id="safes"></ol>
+        <div class="vault" id="vault">
+          <div class="interior" aria-hidden="true"><div class="loot"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+          <div class="door" id="door"><svg id="doorSvg" viewBox="0 0 440 440" role="img" aria-label="Vault door with a combination dial and 13 tumbler pins"></svg></div>
+        </div>
+      </div>
+      <div class="comms" id="comms" aria-live="polite">
+        <div class="avatar" id="avatar">JA</div>
+        <div class="bubble"><div class="who"><b id="commsWho">Jamali</b><span id="commsRole">mastermind · on comms</span></div><p id="commsText"></p></div>
+      </div>
+    </section>
+
+    <section aria-label="Crack the safe">
+      <div class="card">
+        <div class="card-body">
+          <div class="field-label"><label for="pw">Heist password</label><span>Timer starts when you type</span></div>
+          <textarea id="pw" rows="2" maxlength="64" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type a made-up password…"></textarea>
+          <div class="stats-row">
+            <div class="stat"><small>Length</small><b id="mLen">0</b><span class="ok" id="mPrime" hidden>prime</span></div>
+            <div class="stat"><small>Digit sum</small><b id="mSum">0</b></div>
+            <div class="stat"><small>Slipped</small><b id="mDrops">0</b></div>
+          </div>
+          <div class="progress">
+            <div class="progress-top"><span>Tumblers set</span><b id="mSet">0 / 3</b></div>
+            <div class="bar"><i id="barFill"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="rules-head"><h3>Rules</h3><span>Newest safe on top</span></div>
+      <ul class="rules" id="rules"></ul>
+    </section>
+  </div>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Team Jamil Jamali · Puzzle Passwords challenge</span><span>A heist-movie homage with an original story and riddles</span></div></footer>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div id="flash" aria-hidden="true"></div>
+<canvas id="coins" aria-hidden="true"></canvas>
+<div class="overlay" id="result" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <span class="badge" id="resultBadge"></span>
+    <h2 id="resultTitle"></h2>
+    <p id="resultSub"></p>
+    <dl class="dl" id="resultStats"></dl>
+    <button class="btn primary" id="againBtn" type="button">Run the job again</button>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const pwEl = $('#pw'), rulesEl = $('#rules'), vaultEl = $('#vault'), doorEl = $('#door');
+const TOTAL = 420;
+const C = 220;
+
+const ic = (paths, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+const ICON = {
+  check: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  x: '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+  tick: '<path d="M20 6 9 17l-5-5"/>',
+  warn: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  unlock: '<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
+  vol: '<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/>',
+  mute: '<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/>',
+  music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  ear: '<path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>',
+};
+
+const SAFES = [
+  { roman: 'I', name: 'The Gold', city: 'Paris' },
+  { roman: 'II', name: 'The Storm', city: 'Prague' },
+  { roman: 'III', name: 'The Dragon', city: 'St. Moritz' },
+  { roman: 'IV', name: 'The Twilight', city: 'Unknown' },
+];
+
+const lower = p => p.toLowerCase();
+const digitSum = p => (p.match(/\d/g) || []).reduce((a, d) => a + Number(d), 0);
+const isPrime = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+
+// Each rule is one tumbler. safe = which safe reveals it.
+const RULES = [
+  { safe: 0, title: 'Minimum length', text: 'The dial will not even turn for fewer than <strong>8 characters</strong>.', check: p => p.length >= 8 },
+  { safe: 0, title: 'Crew signature', text: '<strong>Start with J</strong> for Jamil and <strong>end with J</strong> for Jamali.', check: p => /^j/i.test(p) && /j$/i.test(p) },
+  { safe: 0, title: 'First riddle', text: 'Jamali in your ear: <em>"Heavy, yellow, every thief\'s dream."</em> Put the answer in the password.', check: p => lower(p).includes('gold') },
+  { safe: 1, title: 'Dial combination', text: 'All the <strong>digits must add up to 15</strong>.', check: p => digitSum(p) === 15 },
+  { safe: 1, title: 'Lock plate riddle', text: 'Engraved on the plate: <em>"I have keys, but I open no locks."</em>', check: p => lower(p).includes('piano') },
+  { safe: 1, title: 'Musical lock', text: 'This safe only hears the notes <strong>A–G</strong>. Hide a word of <strong>5+ letters</strong> spelled only with those notes.', extra: 'hum', check: p => /[a-g]{5,}/i.test(p) },
+  { safe: 2, title: 'Laser grid', text: '<strong>No character may appear twice in a row</strong>, or the beams trip.', check: p => p.length > 0 && !/(.)\1/i.test(p) },
+  { safe: 2, title: 'Intercepted radio', text: 'Decode <code>ORFN</code>. Every letter was shifted <strong>3 forward</strong> in the alphabet. Add the real word.', check: p => lower(p).includes('lock') },
+  { safe: 2, title: 'Badge scanner', text: 'The agent\'s badge number is <strong>the count of squares on a chessboard</strong>. Add it.', check: p => p.includes('64') },
+  { safe: 3, title: 'Stethoscope', text: 'A click is <strong>1</strong>, silence is <strong>0</strong>. Read the pattern as a <strong>binary number</strong> and add it.', extra: 'listen', check: p => p.includes('14') },
+  { safe: 3, title: 'Final riddle', text: '<em>"What gets wetter the more it dries?"</em> Write the answer <strong>backwards</strong>.', check: p => lower(p).includes('lewot') },
+  { safe: 3, title: 'Prime tumbler', text: 'The password\'s <strong>length must be a prime number</strong>.', check: p => isPrime(p.length) },
+];
+const SAB = { id: 12, safe: 3, sab: true, title: 'The safe fought back', text: 'It <strong>jammed a character</strong> with <code>#</code>. Clear the jam and repair whatever it broke.', check: p => !p.includes('#') };
+RULES.forEach((r, i) => r.id = i);
+const ALL = [...RULES, SAB];
+const LISTEN = [1, 1, 1, 0];
+const NOTES = [['C', 261.63], ['D', 293.66], ['E', 329.63], ['F', 349.23], ['G', 392], ['A', 440], ['B', 493.88]];
+
+let st, timerId = null, pending = [], dialAngle = 0, handleAngle = 0, lastSlipMsg = 0;
+const fresh = () => ({ revealed: 1, sabotaged: false, pendingSab: false, started: false, timeLeft: TOTAL, drops: 0, over: false, won: false, listened: false, ok: {} });
+const later = (fn, ms) => { const id = setTimeout(fn, ms); pending.push(id); return id; };
+const fmt = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+const activeRules = () => ALL.filter(r => r.sab ? st.sabotaged : r.safe < st.revealed);
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Sound (Web Audio, generated, no files) ---------- */
+let ac = null, soundOn = true;
+function audio() {
+  if (!soundOn) return null;
+  if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+  if (ac.state === 'suspended') ac.resume();
+  return ac;
+}
+function noise(dur, freq, gain) {
+  const a = audio(); if (!a) return;
+  const len = Math.floor(a.sampleRate * dur), buf = a.createBuffer(1, len, a.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4);
+  const src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+  src.buffer = buf; f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = 3; g.gain.value = gain;
+  src.connect(f).connect(g).connect(a.destination); src.start();
+}
+function tone(freq, dur, type = 'sine', gain = .15, when = 0) {
+  const a = audio(); if (!a) return;
+  const t = a.currentTime + when, o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + .05);
+}
+const sfx = {
+  tick: () => noise(.025, 4500, .2),
+  set: () => { noise(.05, 2600, .6); tone(1500, .07, 'triangle', .04); },
+  slip: () => { tone(160, .2, 'sawtooth', .06); noise(.08, 500, .3); },
+  clunk: () => { tone(65, .45, 'sine', .55); noise(.25, 260, .7); },
+  heart: () => { tone(58, .12, 'sine', .45); tone(52, .12, 'sine', .3, .17); },
+  siren: () => {
+    const a = audio(); if (!a) return;
+    const o = a.createOscillator(), g = a.createGain(), t = a.currentTime;
+    o.type = 'square';
+    for (let i = 0; i < 5; i++) { o.frequency.setValueAtTime(620, t + i * .5); o.frequency.linearRampToValueAtTime(940, t + i * .5 + .25); o.frequency.linearRampToValueAtTime(620, t + i * .5 + .5); }
+    g.gain.setValueAtTime(.05, t); g.gain.linearRampToValueAtTime(0, t + 2.5);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + 2.55);
+  },
+};
+
+/* ---------- Vault door SVG ---------- */
+function buildDoor() {
+  const polar = (r, deg) => [C + r * Math.cos(deg * Math.PI / 180), C + r * Math.sin(deg * Math.PI / 180)];
+  let s = `<defs>
+    <linearGradient id="gBrass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a"/><stop offset=".45" stop-color="#b7791f"/><stop offset=".7" stop-color="#f6c453"/><stop offset="1" stop-color="#78450f"/></linearGradient>
+    <radialGradient id="gFace" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#52525b"/><stop offset=".55" stop-color="#27272a"/><stop offset="1" stop-color="#111113"/></radialGradient>
+    <radialGradient id="gKnob" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#d4d4d8"/><stop offset=".6" stop-color="#52525b"/><stop offset="1" stop-color="#18181b"/></radialGradient>
+    <linearGradient id="gSteel" x1="0" x2="1"><stop offset="0" stop-color="#52525b"/><stop offset=".5" stop-color="#d4d4d8"/><stop offset="1" stop-color="#3f3f46"/></linearGradient>
+    <filter id="glow" x="-100%" y="-50%" width="300%" height="200%"><feGaussianBlur stdDeviation="2.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>`;
+  for (let i = 0; i < 8; i++) s += `<g transform="rotate(${i * 45 + 22.5} ${C} ${C})"><rect class="bolt" x="${C - 9}" y="2" width="18" height="44" rx="3" fill="url(#gSteel)" stroke="#09090b"/></g>`;
+  s += `<circle cx="${C}" cy="${C}" r="202" fill="#09090b"/>
+    <circle cx="${C}" cy="${C}" r="190" fill="url(#gFace)"/>
+    <circle cx="${C}" cy="${C}" r="195" fill="none" stroke="url(#gBrass)" stroke-width="14"/>
+    <circle cx="${C}" cy="${C}" r="187" fill="none" stroke="#000" stroke-opacity=".5" stroke-width="2"/>`;
+  for (let i = 0; i < 28; i++) { const [x, y] = polar(195, i * (360 / 28)); s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" fill="#fef3c7" stroke="#78450f" stroke-width=".8"/>`; }
+  s += `<circle cx="${C}" cy="${C}" r="160" fill="none" stroke="#fff" stroke-opacity=".06" stroke-width="2"/>
+    <circle cx="${C}" cy="${C}" r="152" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="3"/>
+    <circle cx="${C}" cy="${C}" r="114" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="3"/>
+    <circle cx="${C}" cy="${C}" r="110" fill="none" stroke="#fff" stroke-opacity=".05" stroke-width="2"/>
+    <text x="${C}" y="${C + 175}" text-anchor="middle" font-family="Geist Mono, monospace" font-size="8" letter-spacing="3" fill="#f59e0b" fill-opacity=".75">ATELIER VOSS · 1871</text>`;
+  s += `<g id="pins">`;
+  for (let i = 0; i < 13; i++) {
+    const deg = -90 + i * (360 / 13), [x, y] = polar(133, deg);
+    s += `<g class="pin" data-i="${i}" data-state="idle" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${deg + 90})">
+      <rect x="-7" y="-17" width="14" height="34" rx="4" fill="#050506"/>
+      <rect class="pin-rect" x="-4" y="-12" width="8" height="24" rx="3"/></g>`;
+  }
+  s += `</g><g id="handle">`;
+  for (const deg of [30, 150, 270]) s += `<g transform="rotate(${deg} ${C} ${C})"><rect x="${C - 6}" y="${C - 104}" width="12" height="104" rx="6" fill="url(#gSteel)" stroke="#09090b"/><circle cx="${C}" cy="${C - 104}" r="11" fill="url(#gBrass)" stroke="#451a03"/></g>`;
+  s += `</g><g id="dial"><circle cx="${C}" cy="${C}" r="77" fill="url(#gBrass)" stroke="#451a03"/><circle cx="${C}" cy="${C}" r="68" fill="#111113"/>`;
+  for (let t = 0; t < 100; t++) {
+    const len = t % 10 === 0 ? 11 : t % 5 === 0 ? 7 : 4, [x1, y1] = polar(68, t * 3.6 - 90), [x2, y2] = polar(68 - len, t * 3.6 - 90);
+    s += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#fcd34d" stroke-width="${t % 10 ? 1 : 1.8}"/>`;
+  }
+  for (let n = 0; n < 10; n++) {
+    const [x, y] = polar(47, n * 36 - 90);
+    s += `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" transform="rotate(${n * 36} ${x.toFixed(1)} ${y.toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-family="Geist Mono, monospace" font-size="9" font-weight="600" fill="#fcd34d">${n * 10}</text>`;
+  }
+  s += `<circle cx="${C}" cy="${C}" r="36" fill="url(#gKnob)" stroke="#09090b"/>`;
+  for (let k = 0; k < 36; k++) { const [x1, y1] = polar(36, k * 10), [x2, y2] = polar(31, k * 10); s += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#09090b" stroke-width="1.4"/>`; }
+  s += `<circle cx="${C}" cy="${C}" r="8" fill="url(#gBrass)"/></g>
+    <path d="M${C - 7} ${C - 93} L${C + 7} ${C - 93} L${C} ${C - 80} Z" style="fill: var(--danger)"/>`;
+  $('#doorSvg').innerHTML = s;
+}
+function turn(el, angle, secs, ease = 'cubic-bezier(.2,.9,.3,1.25)') { el.style.transition = `transform ${secs}s ${ease}`; el.style.transform = `rotate(${angle}deg)`; }
+const turnDial = (deg, secs = .35, ease) => { dialAngle += deg; turn($('#dial'), dialAngle, secs, ease); };
+const turnHandle = (deg, secs) => { handleAngle += deg; turn($('#handle'), handleAngle, secs, 'cubic-bezier(.6,0,.3,1)'); };
+function shake() { if (reduced()) return; doorEl.classList.remove('shake'); void doorEl.offsetWidth; doorEl.classList.add('shake'); }
+
+/* ---------- Comms + toasts ---------- */
+const CREW = { Jamali: ['JA', 'mastermind · on comms'], Jamil: ['JI', 'safecracker · at the door'] };
+let typeId = null;
+function say(who, text) {
+  const comms = $('#comms'), out = $('#commsText');
+  $('#commsWho').textContent = who; $('#avatar').textContent = CREW[who][0]; $('#commsRole').textContent = CREW[who][1];
+  clearInterval(typeId);
+  if (reduced()) { out.textContent = text; return; }
+  let i = 0; out.textContent = ''; comms.classList.add('talking');
+  typeId = setInterval(() => { out.textContent = text.slice(0, ++i); if (i >= text.length) { clearInterval(typeId); comms.classList.remove('talking'); } }, 15);
+}
+function toast(kind, title, body) {
+  const el = document.createElement('div');
+  el.className = `toast ${kind}`;
+  el.innerHTML = `${ic(kind === 'good' ? ICON.check : kind === 'bad' ? ICON.x : ICON.warn)}<div><b>${title}</b><span>${body}</span></div>`;
+  const box = $('#toasts'); box.append(el);
+  while (box.children.length > 3) box.firstChild.remove();
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 3800);
+}
+
+/* ---------- Rendering ---------- */
+function paintSafes() {
+  $('#safes').innerHTML = SAFES.map((s, i) => {
+    const state = st.won || i < st.revealed - 1 ? 'cracked' : i === st.revealed - 1 ? 'working' : 'sealed';
+    return `<li class="step" data-state="${state}"><span class="step-dot">${state === 'cracked' ? ic(ICON.tick) : s.roman}</span><span><b>${s.name}</b><small>${s.city}</small></span></li>`;
+  }).join('');
+  const s = SAFES[st.revealed - 1];
+  $('#vaultSub').textContent = st.won ? 'All four safes cracked' : `Safe ${s.roman} of IV · ${s.name}, ${s.city}`;
+}
+
+function renderRules(newSafe = -1) {
+  rulesEl.innerHTML = '';
+  const list = st.sabotaged ? [SAB] : [];
+  for (let s = st.revealed - 1; s >= 0; s--) list.push(...RULES.filter(r => r.safe === s));
+  for (const r of list) {
+    const li = document.createElement('li');
+    li.className = 'rule' + (r.sab ? ' sab' : '') + ((r.sab && newSafe === 99) || (!r.sab && r.safe === newSafe) ? ' fresh' : '');
+    li.dataset.state = st.ok[r.id] ? 'pass' : 'fail';
+    const s = SAFES[r.safe];
+    li.innerHTML = `<span class="state">${ic(ICON.check, 'yes')}${ic(ICON.x, 'no')}</span>
+      <div class="rule-main">
+        <div class="rule-top"><b>${String(r.id + 1).padStart(2, '0')} · ${r.title}</b>${r.sab ? '<span class="badge red">Sabotage</span>' : `<span class="badge">Safe ${s.roman} · ${s.city}</span>`}</div>
+        <p>${r.text}</p>${extraHtml(r)}
+      </div>`;
+    r.el = li; rulesEl.append(li);
+  }
+  rulesEl.querySelector('[data-act="hum"]')?.addEventListener('click', hum);
+  rulesEl.querySelector('[data-act="listen"]')?.addEventListener('click', listen);
+}
+function extraHtml(r) {
+  if (r.extra === 'hum') return `<div class="extra"><button class="btn sm" type="button" data-act="hum">${ic(ICON.music)}Hum the notes</button><div class="notes">${NOTES.map(n => `<span>${n[0]}</span>`).join('')}</div></div>`;
+  if (r.extra === 'listen') return `<div class="extra"><button class="btn sm" type="button" data-act="listen">${ic(ICON.ear)}Listen to the door</button><div class="dots" aria-label="Click pattern">${LISTEN.map(b => `<span class="${st.listened ? (b ? 'one' : 'zero') : ''}">${st.listened ? '' : '?'}</span>`).join('')}</div></div>`;
+  return '';
+}
+function hum() {
+  const spans = rulesEl.querySelectorAll('.notes span');
+  NOTES.forEach(([, f], i) => later(() => { spans.forEach(s => s.classList.remove('on')); spans[i]?.classList.add('on'); tone(f, .35, 'triangle', .12); }, i * 260));
+  later(() => spans.forEach(s => s.classList.remove('on')), NOTES.length * 260 + 200);
+}
+function listen() {
+  const dots = rulesEl.querySelectorAll('.dots span');
+  dots.forEach(d => { d.className = ''; d.textContent = ''; });
+  LISTEN.forEach((b, i) => later(() => { dots[i].className = b ? 'one' : 'zero'; if (b) { sfx.set(); turnDial(-14, .2); } }, 300 + i * 550));
+  st.listened = true;
+}
+
+function paintPins() {
+  document.querySelectorAll('.pin').forEach(pin => {
+    const i = Number(pin.dataset.i), r = ALL[i];
+    pin.dataset.state = r.sab
+      ? (st.sabotaged ? (st.ok[i] ? 'pass' : 'fail') : 'hidden')
+      : (r.safe < st.revealed ? (st.ok[i] ? 'pass' : 'fail') : 'idle');
+  });
+}
+
+function paintMeters() {
+  const p = pwEl.value, act = activeRules(), set = act.filter(r => st.ok[r.id]).length;
+  const allSet = ALL.filter(r => (!r.sab || st.sabotaged) && st.ok[r.id] && (r.sab || r.safe < st.revealed)).length;
+  $('#mLen').textContent = p.length;
+  $('#mPrime').hidden = !isPrime(p.length);
+  $('#mSum').textContent = digitSum(p);
+  $('#mDrops').textContent = st.drops;
+  $('#mSet').textContent = `${set} / ${act.length}`;
+  $('#barFill').style.width = `${act.length ? (set / act.length) * 100 : 0}%`;
+  $('#pinCount').textContent = `${allSet} / ${st.sabotaged ? 13 : 12} pins`;
+}
+
+/* ---------- Game flow ---------- */
+function evaluate(fromInput) {
+  if (st.over) return;
+  const p = pwEl.value;
+  let gained = false, slipped = false;
+  for (const r of activeRules()) {
+    const ok = !!r.check(p);
+    if (st.ok[r.id] && !ok) { slipped = true; st.drops++; }
+    if (!st.ok[r.id] && ok) gained = true;
+    st.ok[r.id] = ok;
+    if (r.el) r.el.dataset.state = ok ? 'pass' : 'fail';
+  }
+  paintPins(); paintMeters();
+  if (fromInput) {
+    if (gained) sfx.set();
+    if (slipped) {
+      sfx.slip();
+      if (Date.now() - lastSlipMsg > 8000) { lastSlipMsg = Date.now(); toast('bad', 'A tumbler slipped', 'Something you typed broke a rule that was already set.'); }
+    }
+  }
+  if (!fromInput || !activeRules().every(r => st.ok[r.id])) return;
+  if (st.revealed < 4) crack();
+  else if (!st.sabotaged) scheduleSabotage();
+  else win();
+}
+
+const CRACK_LINES = [
+  'The Gold is open! Next stop Prague. The Storm safe only listens to music, so think in notes.',
+  'Storm cracked. Now St. Moritz: lasers, coded radio and an Interpol scanner. Careful, Jamil.',
+  'The Dragon is down. One safe left, the Twilight. Nobody has ever opened it.',
+];
+function crack() {
+  const done = st.revealed - 1;
+  st.revealed++;
+  sfx.clunk(); shake(); turnDial(720, 1.2, 'cubic-bezier(.3,0,.2,1)');
+  say('Jamali', CRACK_LINES[done]);
+  toast('good', `Safe ${SAFES[done].roman} cracked`, `${SAFES[done].name} is open. 3 new rules unlocked.`);
+  paintSafes(); renderRules(st.revealed - 1); evaluate(false);
+  later(() => evaluate(true), 1300); // chain-crack if the password already fits the next safe
+}
+
+function scheduleSabotage() {
+  if (st.pendingSab) return;
+  st.pendingSab = true;
+  say('Jamil', 'All twelve tumblers set... wait. Something just moved inside the door.');
+  later(() => {
+    st.pendingSab = false;
+    if (st.over || !RULES.every(r => st.ok[r.id])) return;
+    sabotage();
+  }, 1100);
+}
+function sabotage() {
+  const p = pwEl.value, lp = lower(p);
+  const hits = ['gold', 'piano', 'lock', 'lewot'].map(w => ({ w, i: lp.indexOf(w) })).filter(h => h.i >= 0);
+  const h = hits[Math.floor(Math.random() * hits.length)];
+  const pos = h ? h.i + Math.floor(Math.random() * h.w.length) : Math.floor(Math.random() * p.length);
+  pwEl.value = p.slice(0, pos) + '#' + p.slice(pos + 1);
+  st.sabotaged = true;
+  sfx.clunk(); sfx.slip(); shake(); turnDial(-540, .9);
+  say('Jamali', 'The safe fought back! It jammed one character with a #. Find it, fix it, and repair whatever it broke.');
+  toast('bad', 'Sabotage!', 'A 13th tumbler appeared. Fix the jammed character.');
+  renderRules(99); evaluate(false);
+}
+
+function startTimer() {
+  st.started = true;
+  clearInterval(timerId);
+  timerId = setInterval(() => {
+    st.timeLeft--;
+    paintEta();
+    if (st.timeLeft === 60) { say('Jamali', 'Sirens two streets away. Sixty seconds, Jamil!'); toast('warn', '60 seconds left', 'Interpol is almost at the door.'); }
+    if (st.timeLeft <= 60 && st.timeLeft > 0) sfx.heart();
+    if (st.timeLeft <= 0) lose();
+  }, 1000);
+}
+function paintEta() {
+  $('#etaTime').textContent = fmt(Math.max(0, st.timeLeft));
+  $('#eta').classList.toggle('alarm', st.started && st.timeLeft <= 30);
+}
+
+function win() {
+  st.over = true; st.won = true; clearInterval(timerId); pwEl.disabled = true;
+  say('Jamil', 'Every tumbler is set... listen to that. We\'re in.');
+  const pins = [...document.querySelectorAll('.pin')];
+  pins.forEach((p, i) => later(() => { p.classList.add('flash'); sfx.set(); turnDial(-28, .12); }, 140 * i));
+  const t = 140 * pins.length + 250;
+  later(() => { turnDial(1440, 1.8, 'cubic-bezier(.5,0,.2,1)'); turnHandle(-240, 1.6); }, t);
+  later(() => { vaultEl.classList.add('unbolt'); sfx.clunk(); }, t + 1500);
+  later(() => { vaultEl.classList.add('open'); sfx.clunk(); paintSafes(); }, t + 2400);
+  later(() => { coins(); showResult(true); }, t + 4100);
+}
+function lose() {
+  st.over = true; clearInterval(timerId); pwEl.disabled = true; paintEta();
+  document.body.classList.add('busted'); sfx.siren(); shake();
+  say('Jamali', 'Interpol is through the front door. Drop everything. We\'re busted.');
+  later(() => showResult(false), 1600);
+}
+function showResult(won) {
+  const act = activeRules(), set = act.filter(r => st.ok[r.id]).length, s = SAFES[st.revealed - 1];
+  const badge = $('#resultBadge');
+  badge.className = 'badge ' + (won ? 'amber' : 'red');
+  badge.textContent = won ? 'Vault open' : 'Caught by Interpol';
+  $('#resultTitle').textContent = won ? 'Heist complete' : 'Busted';
+  $('#resultSub').textContent = won
+    ? 'The Twilight safe is open. Team Jamil Jamali walks out with the gold.'
+    : `The crew was caught at Safe ${s.roman}, ${s.name}. ${set} of ${act.length} tumblers were set.`;
+  const stats = won
+    ? [['Time used', fmt(TOTAL - st.timeLeft)], ['Time to spare', fmt(st.timeLeft)], ['Tumblers slipped', st.drops], ['Password length', pwEl.value.length]]
+    : [['Safes cracked', `${st.revealed - 1} / 4`], ['Tumblers set', `${set} / ${act.length}`], ['Tumblers slipped', st.drops], ['Password length', pwEl.value.length]];
+  $('#resultStats').innerHTML = stats.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+  $('#result').hidden = false;
+  $('#againBtn').focus();
+}
+
+function coins() {
+  if (reduced()) return;
+  const c = $('#coins'), x = c.getContext('2d'), dpr = window.devicePixelRatio || 1, W = innerWidth, H = innerHeight;
+  const css = getComputedStyle(document.documentElement), hi = css.getPropertyValue('--primary-hi').trim(), lo = css.getPropertyValue('--primary').trim();
+  c.width = W * dpr; c.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const parts = Array.from({ length: 150 }, () => ({ x: Math.random() * W, y: -20 - Math.random() * H * .7, vx: (Math.random() - .5) * 1.6, vy: 1 + Math.random() * 3, r: 6 + Math.random() * 7, a: Math.random() * 6.28, va: .08 + Math.random() * .2 }));
+  const t0 = performance.now();
+  (function frame(now) {
+    x.clearRect(0, 0, W, H);
+    let alive = false;
+    for (const p of parts) {
+      p.vy += .06; p.x += p.vx; p.y += p.vy; p.a += p.va;
+      if (p.y < H + 20) alive = true;
+      x.beginPath(); x.ellipse(p.x, p.y, Math.max(1, Math.abs(Math.cos(p.a)) * p.r), p.r, 0, 0, 6.283);
+      x.fillStyle = Math.cos(p.a) > 0 ? hi : lo; x.fill();
+    }
+    if (alive && now - t0 < 7000) requestAnimationFrame(frame); else x.clearRect(0, 0, W, H);
+  })(t0);
+}
+
+function paintSound() {
+  const b = $('#soundBtn');
+  b.innerHTML = ic(soundOn ? ICON.vol : ICON.mute);
+  b.setAttribute('aria-pressed', soundOn);
+  b.setAttribute('aria-label', soundOn ? 'Mute sound' : 'Turn sound on');
+}
+
+function reset(data = {}) {
+  pending.forEach(clearTimeout); pending = []; clearInterval(timerId);
+  st = fresh();
+  pwEl.disabled = false; pwEl.value = '';
+  vaultEl.classList.remove('open', 'unbolt'); document.body.classList.remove('busted');
+  document.querySelectorAll('.pin').forEach(p => p.classList.remove('flash'));
+  dialAngle = 0; handleAngle = 0; turn($('#dial'), 0, .6); turn($('#handle'), 0, .6);
+  $('#result').hidden = true;
+  if (data.pw && !data.over) {
+    Object.assign(st, { revealed: data.revealed || 1, sabotaged: !!data.sabotaged, timeLeft: data.timeLeft ?? TOTAL, drops: data.drops || 0, listened: !!data.listened });
+    pwEl.value = data.pw;
+  }
+  paintSafes(); renderRules(); paintEta(); evaluate(false);
+  if (data.pw && !data.over && data.started) startTimer();
+  say('Jamali', 'Jamil, you\'re at the first door. Every rule is a tumbler. Set them all and the safe opens. The clock starts when you type.');
+}
+
+/* ---------- Wiring ---------- */
+pwEl.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
+pwEl.addEventListener('input', () => {
+  if (pwEl.value.includes('\n')) pwEl.value = pwEl.value.replace(/\n/g, '');
+  if (!st.started) startTimer();
+  sfx.tick(); turnDial((Math.random() < .5 ? -1 : 1) * (10 + Math.random() * 26));
+  evaluate(true);
+});
+$('#soundBtn').addEventListener('click', () => { soundOn = !soundOn; paintSound(); });
+$('#resetBtn').addEventListener('click', () => { reset(); pwEl.focus(); });
+$('#againBtn').addEventListener('click', () => { reset(); pwEl.focus(); });
+
+buildDoor(); paintSound();
+window.claude?.hot?.snapshot?.(() => ({ pw: pwEl.value, revealed: st.revealed, sabotaged: st.sabotaged, timeLeft: st.timeLeft, started: st.started, drops: st.drops, over: st.over, listened: st.listened }));
+const start = data => reset(data || {});
+window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+</script>
