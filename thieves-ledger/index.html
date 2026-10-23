@@ -1,0 +1,1333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Thieves' Ledger</title>
+<!--LEDGER_API-->
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Homemade+Apple&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=La+Belle+Aurore&display=swap">
+<style>
+/* Layout: an open ledger on a wooden table. Left page holds the oath, purse, candle and roster;
+   right page holds the thief you face. On phones the book becomes one page with the oath pinned on top. */
+:root {
+  color-scheme: light;
+  --lamp: #1f1a17;
+  --gall: #5a3e2b;
+  --ox: #7a1f1f;
+  --gold: #b8892f;
+  --parch: #efe3c8;
+  --wood: #2a1c14;
+  --parch-deep: color-mix(in srgb, var(--parch) 80%, var(--gall));
+  --leather: color-mix(in srgb, var(--ox) 42%, var(--wood));
+  --font-sc: "IM Fell English SC", "Cormorant Garamond", Georgia, serif;
+  --font-body: "IM Fell English", "EB Garamond", Georgia, serif;
+  --font-hand: "Homemade Apple", "Segoe Script", "Bradley Hand", cursive;
+  --font-scrawl: "La Belle Aurore", "Segoe Script", "Bradley Hand", cursive;
+  --font-true: "Courier Prime", "Courier New", monospace;
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' seed='5' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.24 0 0 0 0 0.17 0.9 0 0 0 -0.34'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+  --mottle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='640'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='0.011' numOctaves='3' seed='8' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.24 0 0 0 0 0.17 0.8 0 0 0 -0.36'/></filter><rect width='100%' height='100%' filter='url(%23m)'/></svg>");
+  --wood-dark: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1800' height='500'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.0025 0.06' numOctaves='4' seed='11' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.10 0 0 0 0 0.09 1.6 0 0 0 -0.62'/></filter><rect width='100%' height='100%' filter='url(%23f)'/></svg>");
+  --wood-light: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1800' height='500'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.0035 0.09' numOctaves='3' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.24 0 0 0 0 0.17 0 1.8 0 0 -0.98'/></filter><rect width='100%' height='100%' filter='url(%23f)'/></svg>");
+  --leather-tex: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' seed='6' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.10 0 0 0 0 0.09 1.2 0 0 0 -0.45'/></filter><rect width='100%' height='100%' filter='url(%23l)'/></svg>");
+  --stone-tex: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='s'><feTurbulence type='fractalNoise' baseFrequency='0.045' numOctaves='4' seed='14' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.94 0 0 0 0 0.89 0 0 0 0 0.78 1.5 0 0 0 -0.92'/></filter><filter id='d'><feTurbulence type='fractalNoise' baseFrequency='0.12' numOctaves='2' seed='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.10 0 0 0 0 0.09 0 1.3 0 0 -0.5'/></filter><rect width='100%' height='100%' filter='url(%23s)'/><rect width='100%' height='100%' filter='url(%23d)'/></svg>");
+  --rules: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='52'><path d='M0 41.5 H40' stroke='%235a3e2b' stroke-opacity='.45' stroke-width='1'/></svg>");
+  --rules-sm: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='46'><path d='M0 36.5 H40' stroke='%235a3e2b' stroke-opacity='.45' stroke-width='1'/></svg>");
+  --hatch: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='9' height='9'><path d='M-2 11 L11 -2' stroke='%235a3e2b' stroke-opacity='.28' stroke-width='1'/></svg>");
+  --blot: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><filter id='b'><feTurbulence baseFrequency='0.15' numOctaves='2' seed='2'/><feDisplacementMap in='SourceGraphic' scale='9' xChannelSelector='R' yChannelSelector='G'/></filter><g filter='url(%23b)' fill='%231f1a17'><circle cx='20' cy='20' r='11'/><circle cx='31' cy='11' r='3'/><circle cx='9' cy='30' r='2.2'/></g></svg>");
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--wood);
+  background-image: var(--wood-dark), var(--wood-light);
+  color: var(--lamp);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 24px;
+  overflow-x: clip;
+}
+body.locked { overflow: hidden; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.parchment {
+  background-color: var(--parch);
+  background-image: var(--grain), var(--mottle);
+  box-shadow: inset 0 0 70px rgba(90, 62, 43, .42), inset 0 0 14px rgba(90, 62, 43, .3);
+}
+
+/* Hand-drawn borders: an SVG path drawn by script inside any .wobbly element */
+.wobbly { position: relative; isolation: isolate; }
+.wob { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: -1; }
+.wob path { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linejoin: round; }
+
+/* Buttons: ink stamps and wax-sealed tabs */
+button { font: inherit; color: inherit; }
+.stamp {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-sc); font-size: 17px; letter-spacing: .04em; line-height: 1.2;
+  color: var(--ox); background: transparent; border: 0; padding: 9px 16px 8px;
+  cursor: pointer; transform: rotate(-.7deg); text-align: left;
+}
+.stamp:hover:not(:disabled) { background-color: rgba(122, 31, 31, .07); }
+.stamp:disabled { color: var(--gall); cursor: not-allowed; }
+.stamp.light { color: var(--parch); }
+.stamp.light:hover { background-color: rgba(239, 227, 200, .08); }
+.tab {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-sc); font-size: 18px; letter-spacing: .04em; line-height: 1.2;
+  color: var(--parch); background: transparent; border: 0; padding: 12px 20px 11px 46px;
+  cursor: pointer; transform: rotate(.6deg); text-align: left;
+}
+.tab > .wob path:first-child { fill: var(--ox); stroke: var(--lamp); }
+.tab::before {
+  content: ""; position: absolute; left: 14px; top: 50%; width: 21px; height: 21px; margin-top: -10.5px;
+  border-radius: 47% 53% 44% 56% / 55% 45% 55% 45%;
+  background: color-mix(in srgb, var(--ox) 70%, var(--lamp));
+  box-shadow: inset 0 0 0 2px rgba(239, 227, 200, .22), inset 3px -3px 0 rgba(31, 26, 23, .35);
+}
+.tab:hover > .wob path:first-child { fill: color-mix(in srgb, var(--ox) 85%, var(--lamp)); }
+.linkish {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font-family: var(--font-body); font-style: italic; font-size: 17px; color: var(--gall);
+  text-decoration: underline dotted; text-underline-offset: 4px; text-align: left;
+}
+.linkish:hover:not(:disabled) { color: var(--ox); }
+.linkish:disabled { text-decoration: none; cursor: not-allowed; }
+:focus-visible { outline: 2px dashed var(--lamp); outline-offset: 4px; }
+.light:focus-visible, .cover:focus-visible, .skip:focus-visible { outline-color: var(--parch); }
+
+/* Masthead and sound */
+.masthead { max-width: 1240px; margin: 0 auto; padding-block: 16px 0; padding-right: 130px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.masthead .title { margin: 0; font-family: var(--font-sc); font-size: 22px; letter-spacing: .08em; color: var(--gold); }
+.masthead .sub { margin: 0; font-style: italic; font-size: 15px; color: color-mix(in srgb, var(--parch) 72%, var(--wood)); }
+.mute { position: fixed; z-index: 90; top: calc(env(safe-area-inset-top, 0px) + 10px); right: max(16px, env(safe-area-inset-right, 0px)); background-color: var(--wood); font-size: 15px; padding: 7px 12px 6px; }
+
+/* Opening scene */
+.opening { min-height: calc(100vh - 60px); display: grid; place-items: center; align-content: center; gap: 16px; padding-block: 28px 36px; }
+.tome { position: relative; width: min(440px, 100%); perspective: 1800px; }
+.first-page { min-height: 580px; padding: 40px 36px 34px; border-radius: 2px 6px 6px 2px; display: flex; flex-direction: column; gap: 14px; }
+.first-page .chapter { margin: 0; font-family: var(--font-sc); font-size: 17px; letter-spacing: .14em; color: var(--ox); }
+.first-page h1 { margin: -6px 0 0; font-family: var(--font-sc); font-weight: 400; font-size: 44px; line-height: 1; letter-spacing: .01em; }
+.first-page .lede { margin: 0; font-size: 18px; }
+.first-page .lede::first-letter { float: left; font-family: var(--font-sc); font-size: 3.1em; line-height: .82; color: var(--ox); margin: 5px 9px 0 0; }
+.name-form { display: grid; gap: 12px; margin-top: 4px; }
+.name-form label { font-family: var(--font-sc); font-size: 17px; letter-spacing: .03em; color: var(--gall); }
+.hand-input { width: 100%; font-family: var(--font-hand); font-size: 22px; line-height: 2; color: var(--lamp); background: transparent; border: 0; border-bottom: 1.5px solid var(--gall); padding: 0 4px; }
+.hand-input::placeholder { color: var(--gall); opacity: .55; }
+.name-form .tab { justify-self: start; }
+.warn-inline { margin: auto 0 0; padding-top: 10px; font-family: var(--font-sc); font-size: 15px; color: var(--ox); }
+.cover {
+  position: absolute; inset: 0; z-index: 2; border: 0; padding: 0; cursor: pointer;
+  border-radius: 3px 9px 9px 3px;
+  background-color: var(--leather); background-image: var(--leather-tex);
+  box-shadow: inset 16px 0 0 -8px rgba(31, 26, 23, .55), inset 0 0 40px rgba(31, 26, 23, .55), 0 14px 26px -8px rgba(0, 0, 0, .75);
+  color: var(--gold); display: grid; align-content: center; justify-items: center; gap: 14px; text-align: center;
+  transform-origin: 0 50%; transition: transform 1.1s cubic-bezier(.6, .1, .3, 1); backface-visibility: hidden;
+}
+.cover-frame { position: absolute; inset: 20px; color: var(--gold); }
+.cover-small { font-family: var(--font-body); font-style: italic; font-size: 17px; color: color-mix(in srgb, var(--parch) 75%, var(--leather)); }
+.cover-title { font-family: var(--font-sc); font-size: 44px; line-height: 1.02; letter-spacing: .04em; max-width: 9ch; }
+.cover-emblem { width: 74px; height: 74px; }
+.cover-hint { font-family: var(--font-sc); font-size: 15px; letter-spacing: .1em; color: color-mix(in srgb, var(--parch) 80%, var(--leather)); }
+.tome.open .cover { transform: rotateY(-168deg); pointer-events: none; }
+.skip { background: none; border: 0; cursor: pointer; font-family: var(--font-body); font-style: italic; font-size: 16px; color: color-mix(in srgb, var(--parch) 78%, var(--wood)); text-decoration: underline dotted; text-underline-offset: 4px; }
+
+/* The open book */
+.book {
+  max-width: 1240px; margin: 14px auto 40px; position: relative;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  padding: 11px; border-radius: 6px;
+  background-color: var(--leather); background-image: var(--leather-tex);
+  box-shadow: 0 18px 30px -12px rgba(0, 0, 0, .8);
+}
+.page { position: relative; isolation: isolate; min-height: 760px; padding: 38px 46px 66px; min-width: 0; }
+.page.left { padding-right: 58px; border-radius: 3px 0 0 3px; box-shadow: inset -36px 0 30px -24px rgba(31, 26, 23, .6), inset 0 0 70px rgba(90, 62, 43, .42), inset 0 0 14px rgba(90, 62, 43, .3); }
+.page.right {
+  padding-left: 58px; border-radius: 0 3px 3px 0;
+  box-shadow: inset 36px 0 30px -24px rgba(31, 26, 23, .55), inset 0 0 70px rgba(90, 62, 43, .42), inset 0 0 14px rgba(90, 62, 43, .3);
+  clip-path: polygon(0 0, calc(100% - 96px) 0, calc(100% - 84px) 7px, calc(100% - 71px) 3px, calc(100% - 58px) 15px, calc(100% - 47px) 13px, calc(100% - 35px) 27px, calc(100% - 22px) 33px, calc(100% - 15px) 49px, calc(100% - 6px) 58px, 100% 76px, 100% 100%, 0 100%);
+}
+.folio { position: absolute; bottom: 24px; font-style: italic; font-size: 16px; color: var(--gall); }
+.page.left .folio { left: 46px; }
+.page.right .folio { right: 58px; }
+.coffee { position: absolute; z-index: -1; right: 44px; bottom: 54px; width: 150px; height: 150px; pointer-events: none; mix-blend-mode: multiply; }
+
+.warn-stamp {
+  position: sticky; top: 12px; z-index: 5; display: grid; gap: 2px;
+  margin: 0 0 22px; padding: 12px 18px 11px; max-width: 30em;
+  color: var(--ox); background-color: var(--parch); background-image: var(--grain);
+  transform: rotate(-1.4deg);
+}
+.warn-stamp strong { font-family: var(--font-sc); font-weight: 400; font-size: 18px; letter-spacing: .03em; line-height: 1.25; }
+.warn-stamp span { font-size: 16px; color: var(--lamp); }
+
+/* Oath */
+.oath-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 14px; margin-bottom: 6px; }
+.oath-head label { font-family: var(--font-sc); font-size: 26px; letter-spacing: .02em; }
+.oath-head .hint { margin: 0; font-style: italic; font-size: 15px; color: var(--gall); }
+.oath-field { position: relative; background-image: var(--rules); background-repeat: repeat; background-position: 0 0; }
+.oath-field::before { content: ""; position: absolute; left: 8px; top: 0; bottom: 0; width: 1.5px; background-color: rgba(122, 31, 31, .45); }
+.oath-field:focus-within { outline: 2px dashed var(--lamp); outline-offset: 6px; }
+.oath-field textarea, .oath-field .mirror {
+  display: block; width: 100%; min-height: 156px; margin: 0; border: 0;
+  padding: 0 6px 0 20px;
+  font-family: var(--font-hand); font-size: 23px; line-height: 52px; letter-spacing: 0;
+  white-space: pre-wrap; word-break: break-all; overflow-wrap: anywhere; tab-size: 4;
+}
+.oath-field .mirror { position: absolute; inset: 0; color: var(--lamp); pointer-events: none; }
+.oath-field textarea { position: relative; resize: none; overflow: hidden; background: transparent; color: transparent; caret-color: var(--lamp); outline: none; }
+.oath-field textarea::placeholder { color: var(--gall); opacity: .6; }
+.oath-field textarea::selection { background-color: rgba(90, 62, 43, .25); color: transparent; }
+.oath-field.true textarea, .oath-field.true .mirror { font-family: var(--font-true); font-size: 21px; letter-spacing: .02em; }
+.mirror .wet { animation: wet .25s ease-out; }
+.smudge { position: relative; }
+.smudge::after { content: ""; position: absolute; left: -.55em; top: -.25em; width: 1.1em; height: 1.1em; background: var(--blot) center / contain no-repeat; animation: smudge 1.9s ease-out forwards; }
+.cloth {
+  position: absolute; inset: -6px; z-index: 3; display: grid; place-items: center; padding: 12px;
+  color: var(--gall); background-color: var(--parch-deep); background-image: var(--hatch);
+  font-style: italic; font-size: 18px; text-align: center;
+}
+.oath-field.covered .mirror { visibility: hidden; }
+.oath-status { display: none; margin: 6px 0 0; font-style: italic; font-size: 15px; color: var(--gall); }
+.chronicle { margin: 10px 0 0; min-height: 1.5em; font-style: italic; font-size: 17px; color: var(--gall); }
+.chronicle.alarm { color: var(--ox); animation: jolt .5s; }
+
+/* Purse and candle */
+.status { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; margin: 26px 0 8px; align-items: end; }
+.purse, .candle { display: flex; align-items: flex-end; gap: 12px; min-width: 0; }
+.purse svg { width: 66px; height: 66px; flex: none; }
+.purse p, .candle p { margin: 0; }
+.purse b { display: block; font-family: var(--font-sc); font-weight: 400; font-size: 36px; line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
+.purse span, .candle p { font-style: italic; font-size: 15px; color: var(--gall); line-height: 1.3; }
+.candle svg { width: 46px; height: 100px; flex: none; overflow: visible; }
+.flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker 1.7s infinite ease-in-out; }
+.candle.unlit #flameGroup, .candle.snuffed #flameGroup { opacity: 0; }
+#smoke { opacity: 0; }
+.candle.snuffed #smoke { animation: smoke 2s ease-out; }
+
+/* Roster */
+.roster { margin-top: 26px; }
+.roster summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; padding: 4px 0; }
+.roster summary::-webkit-details-marker { display: none; }
+.roster summary::before { content: "\2619"; color: var(--ox); font-size: 20px; }
+.roster-title { font-family: var(--font-sc); font-size: 22px; }
+.won-over { font-style: italic; font-size: 16px; color: var(--gall); }
+.roster ol { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 14px; }
+.roster-entry { display: grid; grid-template-columns: 38px minmax(0, 1fr); align-items: center; gap: 8px; width: 100%; padding: 4px 2px; background: none; border: 0; cursor: pointer; text-align: left; color: var(--lamp); font-family: var(--font-body); font-size: 16px; line-height: 1.25; }
+.roster-entry .seal { width: 36px; height: 36px; }
+.roster-entry b { font-family: var(--font-sc); font-weight: 400; color: var(--ox); margin-right: 4px; }
+.roster-entry .r-state { display: block; font-style: italic; font-size: 14px; color: var(--gall); }
+.roster-entry[aria-current="true"] .r-name { text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; }
+
+/* Wax seals */
+.seal { display: block; overflow: visible; transform: rotate(var(--rot, 0deg)); }
+.seal .half { transition: transform .38s cubic-bezier(.3, 1.5, .5, 1); transform-box: view-box; transform-origin: 50px 98px; }
+[data-state="pass"] .seal .half.l { transform: translate(-7px, 3px) rotate(-12deg); }
+[data-state="pass"] .seal .half.r { transform: translate(7px, 4px) rotate(10deg); }
+
+/* The thief's page */
+.thief { position: relative; }
+.thief.turning { animation: turn .65s cubic-bezier(.3, .7, .3, 1); transform-origin: 0 50%; }
+.eyebrow { margin: 0 0 6px; font-family: var(--font-sc); font-size: 15px; letter-spacing: .08em; color: var(--gall); }
+.thief-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.thief-head .numeral { font-family: var(--font-sc); font-size: 54px; line-height: 1; color: var(--ox); }
+.thief-head h2 { margin: 0; font-family: var(--font-sc); font-weight: 400; font-size: 36px; line-height: 1.05; }
+.portrait { display: flex; align-items: flex-end; gap: 20px; margin: 16px 0 6px; }
+.figure { width: 150px; height: 188px; color: var(--lamp); flex: none; }
+.seal-wrap { display: grid; gap: 6px; justify-items: start; padding-bottom: 6px; }
+.seal-wrap .seal { width: 118px; height: 118px; }
+.seal-status { margin: 0; font-style: italic; font-size: 16px; color: var(--gall); max-width: 15ch; }
+.says { margin: 14px 0 0; font-family: var(--font-sc); font-size: 15px; letter-spacing: .06em; color: var(--gall); }
+.riddle { margin: 4px 0 0; font-style: italic; font-size: 24px; line-height: 1.42; max-width: 32ch; }
+.riddle::first-letter { float: left; font-family: var(--font-sc); font-style: normal; font-size: 3.2em; line-height: .8; color: var(--ox); margin: 7px 10px 0 0; }
+.plain { margin: 14px 0 0; color: var(--ox); font-size: 19px; max-width: 36ch; }
+.plain:focus { outline: none; }
+.plain-label { display: block; font-family: var(--font-sc); font-size: 14px; letter-spacing: .06em; }
+.plain.inked { animation: soak .6s ease-out; }
+.bribe-row { margin: 14px 0 0; }
+.paid { margin: 14px 0 0; font-style: italic; font-size: 16px; color: var(--gall); }
+.scrawl { margin: 20px 0 0 30px; max-width: 24ch; font-family: var(--font-scrawl); font-size: 23px; line-height: 1.35; color: var(--gall); transform: rotate(-2.4deg); }
+.orn { margin: 16px 0 0; font-size: 22px; color: var(--ox); letter-spacing: .4em; }
+.newest { margin: 10px 0 0; }
+.cta { margin-top: 26px; display: grid; gap: 12px; justify-items: start; }
+.cta p { margin: 0; font-style: italic; color: var(--gall); }
+
+/* The Captain */
+.swear { display: grid; gap: 12px; margin-top: 18px; max-width: 34em; }
+.swear label { font-family: var(--font-sc); font-size: 19px; }
+.swear input { width: 100%; font-family: var(--font-true); font-size: 22px; letter-spacing: .14em; color: var(--lamp); background: transparent; border: 0; border-bottom: 1.5px solid var(--gall); padding: 6px 4px; }
+.verdict { margin: 0; min-height: 1.5em; font-style: italic; color: var(--ox); }
+.swear-actions { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; }
+
+/* Victory: stone door and decree */
+.cave { position: fixed; inset: 0; z-index: 70; background-color: var(--lamp); overflow: hidden; }
+.cave-inner { position: absolute; inset: 0; overflow-y: auto; display: grid; place-items: center; padding: 48px max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px)); }
+.stone { position: absolute; top: 0; bottom: 0; width: 50.5%; z-index: 2; display: grid; align-content: center; background-color: color-mix(in srgb, var(--parch) 34%, var(--gall)); background-image: var(--stone-tex); transition: transform 2.8s cubic-bezier(.55, .05, .3, 1); }
+.stone.l { left: 0; justify-items: end; padding-right: 3vw; box-shadow: inset -5px 0 0 rgba(31, 26, 23, .75); }
+.stone.r { right: 0; justify-items: start; padding-left: 3vw; box-shadow: inset 5px 0 0 rgba(31, 26, 23, .75); }
+.stone span { font-family: var(--font-sc); font-size: clamp(26px, 6vw, 66px); letter-spacing: .18em; color: color-mix(in srgb, var(--gall) 70%, var(--lamp)); text-shadow: 1px 1px 0 rgba(239, 227, 200, .2), -1px -1px 0 rgba(31, 26, 23, .85); }
+.cave.opened .stone.l { transform: translateX(-102%); }
+.cave.opened .stone.r { transform: translateX(102%); }
+.decree { position: relative; width: min(600px, 100%); padding: 46px clamp(22px, 5vw, 46px) 40px; transform: scaleY(0); transform-origin: 50% 0; transition: transform 1.3s cubic-bezier(.4, .1, .2, 1); }
+.cave.unrolled .decree { transform: scaleY(1); }
+.decree::before, .decree::after { content: ""; position: absolute; left: -14px; right: -14px; height: 18px; border-radius: 9px; background-color: var(--gall); box-shadow: inset 0 -5px 0 rgba(31, 26, 23, .45); }
+.decree::before { top: -9px; }
+.decree::after { bottom: -9px; }
+.decree .kicker { margin: 0; font-family: var(--font-sc); font-size: 16px; letter-spacing: .14em; color: var(--ox); }
+.decree h2 { margin: 2px 0 10px; font-family: var(--font-sc); font-weight: 400; font-size: 42px; line-height: 1; }
+.decree .proclaim { margin: 0; font-size: 21px; line-height: 1.5; }
+.decree .proclaim::first-letter { float: left; font-family: var(--font-sc); font-size: 3em; line-height: .82; color: var(--ox); margin: 6px 9px 0 0; }
+.decree .proclaim b { font-family: var(--font-hand); font-weight: 400; font-size: .95em; }
+.rank { margin: 18px 0 0; display: flex; align-items: center; gap: 16px; }
+.rank .seal { width: 84px; height: 84px; flex: none; }
+.rank p { margin: 0; }
+.rank small { display: block; font-family: var(--font-sc); font-size: 14px; letter-spacing: .08em; color: var(--gall); }
+.rank strong { font-family: var(--font-sc); font-weight: 400; font-size: 28px; color: var(--ox); }
+.decree-actions { display: flex; flex-wrap: wrap; gap: 14px 18px; margin-top: 24px; align-items: center; }
+.honour { margin-top: 22px; }
+.honour h3 { margin: 0; font-family: var(--font-sc); font-weight: 400; font-size: 20px; color: var(--ox); }
+.honour-place { margin: 2px 0 8px; font-style: italic; color: var(--gall); }
+.honour ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.honour li { display: grid; grid-template-columns: 2.6em minmax(0, 1fr) auto; gap: 10px; align-items: baseline; font-size: 17px; }
+.honour li b { font-family: var(--font-sc); font-weight: 400; color: var(--ox); }
+.honour li span { min-width: 0; overflow-wrap: anywhere; }
+.honour li small { font-style: italic; font-size: 15px; color: var(--gall); white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
+.honour li.you span { text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; }
+
+/* The last page */
+.truth { position: fixed; inset: 0; z-index: 75; overflow-y: auto; background-color: var(--wood); background-image: var(--wood-dark), var(--wood-light); padding: 56px max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px)); }
+.truth-page { max-width: 780px; margin: 0 auto; padding: 46px clamp(20px, 6vw, 70px) 54px; border-radius: 3px; }
+.truth-page .kicker { margin: 0; font-family: var(--font-sc); font-size: 16px; letter-spacing: .14em; color: var(--ox); }
+.truth-page h2 { margin: 2px 0 12px; font-family: var(--font-sc); font-weight: 400; font-size: clamp(32px, 5vw, 46px); line-height: 1.05; text-wrap: balance; }
+.truth-page h2:focus { outline: none; }
+.truth-page .intro { margin: 0; font-size: 19px; max-width: 62ch; }
+.truth-page section { margin-top: 26px; }
+.truth-page h3 { margin: 0; font-family: var(--font-sc); font-weight: 400; font-size: 23px; color: var(--ox); text-wrap: balance; }
+.truth-page section p { margin: 6px 0 0; max-width: 62ch; }
+.truth-page .divider { margin: 28px 0 0; color: var(--ox); font-size: 22px; letter-spacing: .5em; }
+.truth-page .ending { margin: 18px 0 0; font-family: var(--font-sc); font-size: 24px; line-height: 1.35; max-width: 34ch; }
+
+@keyframes wet { from { color: transparent; text-shadow: 0 0 6px var(--lamp); } }
+@keyframes smudge { 0% { opacity: .95; transform: scale(.35); } 35% { opacity: .85; transform: scale(1.15); } 100% { opacity: 0; transform: scale(1.6); } }
+@keyframes soak { from { opacity: 0; filter: blur(2px); } }
+@keyframes jolt { 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-2px); } }
+@keyframes turn { from { transform: perspective(1600px) rotateY(-72deg); opacity: 0; } }
+@keyframes flicker { 0%, 100% { transform: scale(1, 1) skewX(0); } 22% { transform: scale(.95, 1.07) skewX(2deg); } 48% { transform: scale(1.04, .94) skewX(-2deg); } 74% { transform: scale(.98, 1.04) skewX(1deg); } }
+@keyframes smoke { 0% { opacity: .9; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-22px); } }
+
+/* Phone: one page, oath pinned on top, note pinned to the bottom */
+@media (max-width: 760px) {
+  body { padding-bottom: 104px; font-size: 17px; }
+  .masthead { padding-right: 120px; }
+  .masthead .title { font-size: 19px; }
+  .masthead .sub { display: none; }
+  .book { display: flex; flex-direction: column; padding: 0; margin-top: 12px; border-radius: 3px; background-color: var(--parch); background-image: var(--grain), var(--mottle); box-shadow: inset 0 0 50px rgba(90, 62, 43, .4); }
+  .page, .left-top { display: contents; }
+  .folio, .coffee { display: none; }
+  .warn-stamp { position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 50; margin: 0; max-width: none; transform: none; padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background-color: var(--parch); }
+  .warn-stamp strong { font-size: 16px; }
+  .warn-stamp span { font-size: 15px; }
+  .oath-block { order: 1; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; padding: 12px 16px 10px; background-color: var(--parch); background-image: var(--grain); border-bottom: 3px double var(--gall); }
+  .oath-head { padding-right: 104px; }
+  .oath-head label { font-size: 22px; }
+  .oath-head .hint { display: none; }
+  .oath-field { background-image: var(--rules-sm); }
+  .oath-field textarea, .oath-field .mirror { font-size: 19px; line-height: 46px; min-height: 92px; padding-left: 18px; }
+  .oath-field.true textarea, .oath-field.true .mirror { font-size: 17px; }
+  .oath-status { display: block; }
+  .chronicle { margin-top: 4px; font-size: 15px; }
+  .leaf { order: 2; padding: 22px 16px 6px; }
+  .cta { order: 3; padding: 0 16px; margin-top: 18px; }
+  .status { order: 4; padding: 0 16px; margin-top: 24px; }
+  .roster { order: 5; padding: 0 16px 22px; }
+  .roster ol { grid-template-columns: minmax(0, 1fr); }
+  .thief-head .numeral { font-size: 44px; }
+  .thief-head h2 { font-size: 30px; }
+  .portrait { gap: 14px; }
+  .figure { width: 116px; height: 146px; }
+  .seal-wrap .seal { width: 96px; height: 96px; }
+  .riddle { font-size: 21px; }
+  .scrawl { margin-left: 14px; font-size: 21px; }
+  .first-page { min-height: 0; padding: 32px 24px 26px; }
+  .first-page h1 { font-size: 38px; }
+  .cover-title { font-size: 36px; }
+}
+@media (max-width: 400px) {
+  .status { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="inkEdge" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="rough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="9"/><feDisplacementMap in="SourceGraphic" scale="7" xChannelSelector="R" yChannelSelector="G"/></filter>
+  </defs>
+</svg>
+
+<header class="masthead">
+  <p class="title">The Thieves' Ledger</p>
+  <p class="sub" id="keeperLine">Kept in secret by the Army of Forty Thieves</p>
+</header>
+<button class="stamp light wobbly mute" id="muteBtn" type="button" aria-label="Mute sound">Sound · on</button>
+
+<section class="opening" id="opening" aria-label="The closed ledger">
+  <div class="tome" id="tome">
+    <div class="first-page parchment" id="firstPage">
+      <p class="chapter">Chapter I</p>
+      <h1>The Recruit</h1>
+      <p class="lede">The Army of Forty Thieves is recruiting. To join, you must write an oath in the Captain's secret ledger. Each thief guards one page. He will approve your oath only if it meets his strange demand, and he speaks his demand as a riddle.</p>
+      <form class="name-form" id="nameForm" novalidate>
+        <label for="recruitName">Sign the ledger with your thief name</label>
+        <input class="hand-input" id="recruitName" maxlength="28" autocomplete="off" spellcheck="false" placeholder="The Nameless One">
+        <button class="tab wobbly" type="submit">Sign and turn the page</button>
+      </form>
+      <p class="warn-inline">Never write thy true password in this book. This is a game. <span class="warn-detail">Nothing leaves this page.</span></p>
+    </div>
+    <button class="cover" id="cover" type="button" aria-label="Open the ledger">
+      <span class="cover-frame wobbly double" aria-hidden="true"></span>
+      <span class="cover-small">Being the secret book of</span>
+      <span class="cover-title">The Thieves' Ledger</span>
+      <svg class="cover-emblem" viewBox="0 0 80 80" aria-hidden="true"><g filter="url(#inkEdge)" fill="none" stroke="#b8892f" stroke-width="2"><path d="M40 4 L76 40 L40 76 L4 40 Z"/><path d="M40 11 L69 40 L40 69 L11 40 Z" stroke-width="1"/></g><text x="40" y="41" text-anchor="middle" dominant-baseline="central" font-family="IM Fell English SC, Georgia, serif" font-size="22" fill="#b8892f">XL</text></svg>
+      <span class="cover-hint">Press to open</span>
+    </button>
+  </div>
+  <button class="skip" id="skipBtn" type="button">Skip the opening</button>
+</section>
+
+<main class="book" id="book" hidden>
+  <section class="page left parchment" aria-label="Your oath">
+    <aside class="warn-stamp wobbly double" role="note">
+      <strong>Never write thy true password in this book.</strong>
+      <span>This is a game. <span class="warn-detail">Nothing leaves this page.</span></span>
+    </aside>
+    <div class="left-top">
+      <div class="oath-block" id="oathBlock">
+        <div class="oath-head">
+          <label for="oath">The Oath</label>
+          <button class="linkish" id="trueBtn" type="button" aria-pressed="false">Show true letters</button>
+        </div>
+        <div class="oath-field" id="oathField">
+          <div class="mirror" id="mirror" aria-hidden="true"></div>
+          <textarea id="oath" rows="3" maxlength="80" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-describedby="chronicle" placeholder="Write your oath here..."></textarea>
+          <div class="cloth wobbly" id="cloth" hidden>The Captain has laid a cloth over this page.</div>
+        </div>
+        <p class="oath-status" id="oathStatus"></p>
+        <p class="chronicle" id="chronicle"></p>
+      </div>
+      <div class="status">
+        <div class="purse">
+          <svg viewBox="0 0 80 80" aria-hidden="true"><g filter="url(#inkEdge)">
+            <path d="M24 28 C10 44 8 68 26 74 C40 79 56 78 64 70 C78 56 72 38 58 28 Z" fill="#5a3e2b"/>
+            <path d="M22 28 C34 22 48 22 60 28" fill="none" stroke="#1f1a17" stroke-width="4" stroke-linecap="round"/>
+            <path d="M30 26 C26 16 34 10 40 18 C46 10 56 16 50 26" fill="none" stroke="#1f1a17" stroke-width="2.5"/>
+            <path d="M30 50 Q42 56 54 50" fill="none" stroke="#1f1a17" stroke-opacity=".4" stroke-width="1.5"/>
+            <circle cx="62" cy="71" r="7" fill="#b8892f" stroke="#5a3e2b" stroke-width="1.5"/>
+            <circle cx="71" cy="64" r="6" fill="#b8892f" stroke="#5a3e2b" stroke-width="1.5"/>
+          </g></svg>
+          <p><b id="gold">100</b><span>gold coins in your purse</span></p>
+        </div>
+        <div class="candle unlit" id="candle">
+          <svg viewBox="0 0 60 130" role="img" id="candleSvg" aria-label="An unlit candle">
+            <g id="smoke"><path d="M30 34 C24 24 36 18 30 8 C26 0 32 -4 30 -10" fill="none" stroke="#5a3e2b" stroke-opacity=".55" stroke-width="2"/></g>
+            <g id="flameGroup" transform="translate(30 26)">
+              <circle cy="-11" r="14" fill="#b8892f" fill-opacity=".14"/>
+              <g class="flame"><path d="M0 -26 C7 -15 8 -6 0 0 C-8 -6 -7 -15 0 -26Z" fill="#b8892f"/><path d="M0 -15 C3 -9 3 -4 0 -1 C-3 -4 -3 -9 0 -15Z" fill="#efe3c8"/></g>
+            </g>
+            <line id="wick" x1="30" x2="30" y1="26" y2="30" stroke="#1f1a17" stroke-width="1.6"/>
+            <rect id="wax" x="21" y="30" width="18" height="82" fill="#efe3c8" stroke="#5a3e2b" stroke-width="1.5"/>
+            <ellipse cx="30" cy="113" rx="23" ry="4.5" fill="#5a3e2b"/>
+            <path d="M8 113 Q30 126 52 113" fill="#5a3e2b"/>
+            <path d="M51 115 C62 113 62 125 49 121" fill="none" stroke="#5a3e2b" stroke-width="3"/>
+          </svg>
+          <p id="candleText">A fresh candle. It lights with your first word.</p>
+        </div>
+      </div>
+    </div>
+    <details class="roster" id="roster" open>
+      <summary><span class="roster-title">The Roster</span><span class="won-over" id="wonOver">Thieves won over: none of XII</span></summary>
+      <ol id="rosterList"></ol>
+    </details>
+    <svg class="coffee" viewBox="0 0 120 120" aria-hidden="true"><g filter="url(#rough)" fill="none" stroke="#5a3e2b"><circle cx="60" cy="60" r="46" stroke-width="5" stroke-opacity=".14"/><circle cx="60" cy="60" r="42" stroke-width="1.5" stroke-opacity=".12"/><path d="M18 82 A46 46 0 0 1 30 25" stroke-width="8" stroke-opacity=".08"/></g></svg>
+    <span class="folio" aria-hidden="true">xl</span>
+  </section>
+  <section class="page right parchment" aria-label="The thief before you">
+    <div class="leaf" id="leaf"></div>
+    <div class="cta" id="cta" hidden>
+      <p>Every thief is won over. Only the Captain remains.</p>
+      <button class="tab wobbly" id="captainBtn" type="button">Present your oath to the Captain</button>
+    </div>
+    <span class="folio" aria-hidden="true">xli</span>
+  </section>
+</main>
+
+<div class="cave" id="cave" hidden>
+  <div class="cave-inner">
+    <article class="decree parchment" aria-labelledby="decreeTitle">
+      <p class="kicker">By order of the Captain</p>
+      <h2 id="decreeTitle">A Royal Decree</h2>
+      <p class="proclaim" id="proclaim"></p>
+      <div class="rank" id="rankBox"></div>
+      <section class="honour" id="honour" hidden aria-labelledby="honourTitle">
+        <h3 id="honourTitle">The Roll of Honour</h3>
+        <p class="honour-place" id="honourPlace"></p>
+        <ol id="honourList"></ol>
+      </section>
+      <div class="decree-actions">
+        <button class="tab wobbly" id="truthBtn" type="button">Read the last page</button>
+        <button class="stamp wobbly" id="againBtn" type="button">Join again</button>
+      </div>
+    </article>
+  </div>
+  <div class="stone l" aria-hidden="true"><span>Open</span></div>
+  <div class="stone r" aria-hidden="true"><span>Sesame</span></div>
+</div>
+
+<div class="truth" id="truth" hidden>
+  <article class="truth-page parchment" aria-labelledby="truthTitle">
+    <p class="kicker">The last page</p>
+    <h2 id="truthTitle" tabindex="-1">The Truth About Passwords</h2>
+    <p class="intro">Here the ledger drops its act. What follows is the real advice from NIST Special Publication 800-63B, the United States guidance on passwords and sign-in, put in plain words.</p>
+    <section>
+      <h3>Length matters more than strange symbols</h3>
+      <p>A long passphrase of ordinary words is stronger than a short, messy password. “four rusty camels drink at noon” is easier to remember and much harder to guess than “Tr0ub4dor!”.</p>
+    </section>
+    <section>
+      <h3>Changing passwords every 90 days does not make them safer</h3>
+      <p>Forced changes teach people to add a number to the end of the old one. A password should be changed when there is a sign it was stolen, not because a calendar says so.</p>
+    </section>
+    <section>
+      <h3>Composition rules make passwords harder to remember, not harder to crack</h3>
+      <p>“One uppercase, one symbol” turns “password” into “Password1!”, which is one of the first things an attacker tries. The rules only make you reach for a sticky note.</p>
+    </section>
+    <section>
+      <h3>Sites should check new passwords against leaked lists</h3>
+      <p>Billions of passwords have leaked from old break-ins. A good site refuses any new password that appears on those lists, along with dictionary words and easy patterns like “aaaaaa” or “123456”.</p>
+    </section>
+    <section>
+      <h3>Sites should allow paste</h3>
+      <p>Password managers fill in long, random passwords by pasting them. Blocking paste pushes people back to short passwords they can type from memory. The Captain's paste ban was the villain all along.</p>
+    </section>
+    <section>
+      <h3>Use a password manager and turn on two-factor sign-in</h3>
+      <p>A password manager remembers a long, different password for every site, so one leak cannot open the rest. A second step, such as a code from an app or a security key, stops a thief who has learned your password.</p>
+    </section>
+    <p class="divider" aria-hidden="true">&#x2042;</p>
+    <p class="ending">Every rule in this ledger was a joke. Now you know which real ones aren't.</p>
+    <div class="decree-actions">
+      <button class="tab wobbly" id="againBtn2" type="button">Join again</button>
+      <button class="stamp wobbly" id="backDecreeBtn" type="button">Back to the decree</button>
+    </div>
+  </article>
+</div>
+
+<div class="sr-only" id="announcer" aria-live="polite"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  /* ---------- Helpers ---------- */
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const NS = 'http://www.w3.org/2000/svg';
+  const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const chars = s => Array.from(s);
+  const len = s => Array.from(s).length;
+  const isPrime = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+  const digitSum = s => (s.match(/[0-9]/g) || []).reduce((a, d) => a + Number(d), 0);
+  const weekday = () => new Date().toLocaleDateString('en-US', { weekday: 'long' });
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const f1 = n => n.toFixed(1);
+  const ROMAN = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+  const roman = n => { let s = ''; for (const [v, r] of ROMAN) while (n >= v) { s += r; n -= v; } return s; };
+  const ORD = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth'];
+  const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
+  function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+  const BRIBE = 10, MISS = 5, PEEK = 25, CANDLE = 360;
+  const SPICES = ['saffron', 'cumin', 'cinnamon', 'cardamom', 'clove', 'pepper', 'nutmeg', 'turmeric', 'ginger', 'sumac', 'anise', 'paprika'];
+
+  /* ---------- The thieves ---------- */
+  const THIEVES = [
+    { name: 'The Gatekeeper', riddle: 'Twelve camels must walk through, side by side, one per letter.',
+      plain: () => 'At least 12 characters.', check: p => len(p) >= 12,
+      fig: { hat: 'turban', beard: true, prop: 'spear' }, note: 'twelve, not eleven. I counted on my fingers twice.' },
+    { name: 'The Tall One', riddle: 'One letter must stand as tall as a minaret.',
+      plain: () => 'At least one uppercase letter.', check: p => /\p{Lu}/u.test(p),
+      fig: { hat: 'tall', tall: true, prop: 'none' }, note: 'any capital will do. he is not fussy.' },
+    { name: 'The Scribe', riddle: 'Write how many we are, the way a Roman would.',
+      plain: () => 'Contains XL, in capitals.', check: p => p.includes('XL'),
+      fig: { hat: 'cap', prop: 'quill' }, note: 'forty, in the old letters. mind the order!' },
+    { name: 'The Weigher', riddle: 'Weigh every digit you speak. Together they must weigh as much as our army is large.',
+      plain: () => 'All the digits add up to exactly 40.', check: p => digitSum(p) === 40,
+      fig: { hat: 'turban', beard: true, prop: 'scales' }, note: 'nines are heavy. use nines.' },
+    { name: 'The Cartographer', riddle: 'I have cities but no houses, forests but no trees, rivers but no fish.',
+      plain: () => 'Contains the word map.', check: p => /map/i.test(p),
+      fig: { hat: 'hood', prop: 'scroll' }, note: 'it was a map. it was always a map.' },
+    { name: 'The Spice Thief', riddle: "Bring me something from the spice merchant's stall.",
+      plain: () => 'Contains a spice: ' + SPICES.join(', ') + '.', check: p => { const l = p.toLowerCase(); return SPICES.some(s => l.includes(s)); },
+      fig: { hat: 'turban', prop: 'sack' }, note: 'cumin is the shortest. ask me how I know.' },
+    { name: 'The Eavesdropper', riddle: 'We are listening. Say the magic word, but say it backwards.',
+      plain: () => 'Contains emases, which is sesame backwards.', check: p => /emases/i.test(p),
+      fig: { hat: 'hood', prop: 'ear' }, note: 'open sesame... turned about.' },
+    { name: 'The Toll Keeper', riddle: 'Nobody joins for free. Pay in the coin of any land.',
+      plain: () => 'Contains a currency sign: $ € £ ¥ ₹ or ¢.', check: p => /[$€£¥₹¢]/u.test(p),
+      fig: { hat: 'tall', prop: 'coin' }, note: 'any coin at all. he cannot read money.' },
+    { name: 'The Wanderer', riddle: 'The more of me you take, the more of me you leave behind.',
+      plain: () => 'Contains the word steps.', check: p => /steps/i.test(p),
+      fig: { hat: 'hood', beard: true, prop: 'staff' }, note: 'footsteps will do too, the sly devil.' },
+    { name: 'The Watchman', riddle: 'We only recruit on one day: today.',
+      plain: () => `Contains today's weekday in English: ${weekday()}.`, check: p => p.toLowerCase().includes(weekday().toLowerCase()),
+      fig: { hat: 'turban', prop: 'lantern' }, note: 'look at a calendar. he changes his mind every morning.' },
+    { name: 'The Musician', riddle: 'I have many keys, yet I open no lock.',
+      plain: () => 'Contains the word piano.', check: p => /piano/i.test(p),
+      fig: { hat: 'cap', prop: 'lute' }, note: 'he lies — no lock opens for him' },
+    { name: 'The Mathematician', riddle: 'Count your letters. Only one and itself may divide that number.',
+      plain: p => `The total length must be a prime number. Yours is ${len(p)}.`, check: p => isPrime(len(p)),
+      fig: { hat: 'turban', beard: true, prop: 'compass' }, note: 'two, three, five, seven, eleven... keep counting.' },
+  ];
+  const NIGHT = { name: 'The Night Watch', riddle: 'The candle is dead and I am awake. Speak the word that ends every watch.',
+    plain: () => 'Contains the word dawn.', check: p => /dawn/i.test(p),
+    fig: { hat: 'hood', prop: 'nightlantern' }, note: 'keep the candle trimmed next time.' };
+  const CAPTAIN_FIG = { hat: 'plume', beard: true, prop: 'scimitar' };
+  const ALL = [...THIEVES, NIGHT];
+  ALL.forEach((t, i) => { t.id = i; t.numeral = roman(i + 1); });
+
+  /* ---------- Drawing: ink figures, wax seals, wobbly borders ---------- */
+  function figureSVG(spec) {
+    const hy = spec.tall ? 56 : 80, t = hy + 20;
+    const robe = `M48 196 C52 ${t + 60} 56 ${t + 22} 63 ${t} C70 ${t - 9} 90 ${t - 9} 97 ${t} C104 ${t + 22} 108 ${t + 60} 112 196 Z`;
+    const sh = { x: 95, y: t + 6 }, shl = { x: 65, y: t + 6 };
+    const arm = (a, b) => `<path d="M${a.x} ${a.y} L${b.x} ${b.y}" stroke="currentColor" stroke-width="9" stroke-linecap="round" fill="none"/>`;
+    const line = (d, w = 3) => `<path d="${d}" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" fill="none"/>`;
+    const turban = `<path d="M64 ${hy - 4} C61 ${hy - 22} 99 ${hy - 22} 96 ${hy - 4} C89 ${hy - 10} 71 ${hy - 10} 64 ${hy - 4}Z"/><circle cx="89" cy="${hy - 17}" r="4"/>`;
+    const hats = {
+      turban,
+      tall: `<path d="M68 ${hy - 8} L72 ${hy - 36} L88 ${hy - 36} L92 ${hy - 8} Z"/>${line(`M88 ${hy - 36} q8 4 6 16`, 2)}`,
+      hood: `<path d="M61 ${hy + 14} C56 ${hy - 14} 68 ${hy - 24} 80 ${hy - 24} C92 ${hy - 24} 104 ${hy - 14} 99 ${hy + 14} C94 ${hy + 2} 66 ${hy + 2} 61 ${hy + 14}Z"/>`,
+      cap: `<path d="M66 ${hy - 5} C66 ${hy - 19} 94 ${hy - 19} 94 ${hy - 5} Z"/>`,
+      plume: turban + `<path d="M90 ${hy - 20} C98 ${hy - 40} 108 ${hy - 44} 104 ${hy - 30} C100 ${hy - 24} 94 ${hy - 20} 90 ${hy - 20}Z"/>`,
+    };
+    const lantern = `${arm(sh, { x: 120, y: t + 26 })}${line(`M120 ${t + 26} L120 ${t + 34}`, 2)}<path d="M110 ${t + 36} L130 ${t + 36} L127 ${t + 62} L113 ${t + 62}Z"/><rect x="116" y="${t + 42}" width="8" height="13" fill="#b8892f"/>`;
+    const props = {
+      none: '',
+      spear: `${arm(sh, { x: 116, y: t + 16 })}${line(`M118 ${t - 74} L118 196`)}<path d="M112 ${t - 70} L118 ${t - 92} L124 ${t - 70}Z"/>`,
+      quill: `${arm(sh, { x: 106, y: t + 22 })}<path d="M104 ${t + 24} L128 ${t - 20} C134 ${t - 26} 136 ${t - 18} 130 ${t - 12} Z"/>${arm(shl, { x: 58, y: t + 26 })}<rect x="34" y="${t + 16}" width="26" height="18" transform="rotate(-8 47 ${t + 25})"/>`,
+      scales: `${arm(sh, { x: 118, y: t + 2 })}${line(`M120 ${t + 2} L120 ${t - 22}`)}${line(`M98 ${t - 22} L142 ${t - 22}`)}${line(`M100 ${t - 22} L94 ${t + 2} M100 ${t - 22} L106 ${t + 2} M140 ${t - 22} L134 ${t + 2} M140 ${t - 22} L146 ${t + 2}`, 1.2)}<path d="M92 ${t + 2} Q100 ${t + 10} 108 ${t + 2}Z"/><path d="M132 ${t + 2} Q140 ${t + 10} 148 ${t + 2}Z"/>`,
+      scroll: `${arm(sh, { x: 100, y: t + 24 })}${arm(shl, { x: 60, y: t + 24 })}<rect x="54" y="${t + 16}" width="52" height="30" fill="#efe3c8" stroke="currentColor" stroke-width="2.5"/><circle cx="54" cy="${t + 31}" r="5"/><circle cx="106" cy="${t + 31}" r="5"/>${line(`M64 ${t + 38} q8 -14 16 -4 t16 -6`, 1.5)}<path d="M90 ${t + 22} l6 6 m0 -6 l-6 6" stroke="#7a1f1f" stroke-width="2"/>`,
+      sack: `<path d="M94 ${t - 2} C112 ${t - 34} 142 ${t - 12} 132 ${t + 16} C124 ${t + 32} 102 ${t + 22} 94 ${t - 2}Z"/>${arm(sh, { x: 104, y: t - 4 })}`,
+      ear: `${arm(sh, { x: 99, y: hy + 2 })}<circle cx="98" cy="${hy}" r="5.5"/>`,
+      coin: `${arm(sh, { x: 124, y: t + 4 })}<circle cx="132" cy="${t}" r="8" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="132" cy="${t}" r="2.5"/>`,
+      staff: `${arm(shl, { x: 44, y: t + 10 })}${line(`M44 ${t - 48} C36 ${t - 56} 30 ${t - 44} 38 ${t - 40} L46 196`, 4)}`,
+      lantern,
+      nightlantern: lantern + `<path d="M34 22 a15 15 0 1 0 16 24 a12 12 0 1 1 -16 -24Z"/>`,
+      lute: `${arm(sh, { x: 104, y: t + 34 })}<ellipse cx="108" cy="${t + 38}" rx="15" ry="19" transform="rotate(-35 108 ${t + 38})"/>${line(`M98 ${t + 26} L74 ${t - 4}`, 5)}<circle cx="106" cy="${t + 36}" r="4" fill="#efe3c8"/>`,
+      compass: `${arm(sh, { x: 112, y: t + 6 })}${line(`M114 ${t + 6} L102 ${t + 56} M114 ${t + 6} L128 ${t + 56}`)}<circle cx="114" cy="${t + 6}" r="4"/>${line(`M106 ${t + 40} Q115 ${t + 46} 124 ${t + 40}`, 1.5)}`,
+      scimitar: `${arm(sh, { x: 116, y: t + 30 })}<path d="M118 ${t + 28} C142 ${t - 2} 140 ${t - 50} 122 ${t - 74} C132 ${t - 44} 130 ${t - 8} 112 ${t + 22} Z"/>${line(`M108 ${t + 28} L126 ${t + 34}`, 4)}`,
+    };
+    const beard = spec.beard ? `<path d="M69 ${hy + 6} C71 ${hy + 24} 89 ${hy + 24} 91 ${hy + 6} C86 ${hy + 12} 74 ${hy + 12} 69 ${hy + 6}Z"/>` : '';
+    return `<svg class="figure" viewBox="0 0 160 200" aria-hidden="true"><g filter="url(#inkEdge)" fill="currentColor">
+      <ellipse cx="80" cy="196" rx="54" ry="5" fill-opacity=".22"/>
+      <path d="${robe}"/><circle cx="80" cy="${hy}" r="13"/>${hats[spec.hat]}${beard}${props[spec.prop] || ''}</g></svg>`;
+  }
+
+  let sealUid = 0;
+  function sealSVG(numeral, seed) {
+    const rnd = mulberry32(seed * 7919 + 13);
+    const id = 'seal' + (++sealUid);
+    const n = 16, pts = [];
+    for (let i = 0; i < n; i++) { const a = i / n * Math.PI * 2, r = 38 + rnd() * 6; pts.push([50 + r * Math.cos(a), 50 + r * Math.sin(a)]); }
+    const mid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+    let m = mid(pts[n - 1], pts[0]), d = `M${f1(m[0])} ${f1(m[1])}`;
+    for (let i = 0; i < n; i++) { const c = pts[i], e = mid(pts[i], pts[(i + 1) % n]); d += ` Q${f1(c[0])} ${f1(c[1])} ${f1(e[0])} ${f1(e[1])}`; }
+    d += 'Z';
+    const crack = [[50, -2], [46 + rnd() * 3, 16], [52 + rnd() * 4, 31], [45 + rnd() * 3, 48], [53 + rnd() * 4, 65], [46 + rnd() * 3, 82], [51, 102]];
+    const cs = crack.map(p => `${f1(p[0])} ${f1(p[1])}`).join(' L');
+    const rot = (rnd() * 8 - 4).toFixed(1), ox = rnd() * 6 - 3, oy = rnd() * 4 - 2;
+    const size = numeral.length > 3 ? 16 : numeral.length > 2 ? 19 : 23;
+    const face = `<path d="${d}" fill="#7a1f1f"/>
+      <circle cx="50" cy="50" r="27" fill="none" stroke="#1f1a17" stroke-opacity=".35" stroke-width="2.5"/>
+      <circle cx="50" cy="50" r="31.5" fill="none" stroke="#efe3c8" stroke-opacity=".12" stroke-width="1"/>
+      <text x="${f1(50 + ox)}" y="${f1(51 + oy)}" text-anchor="middle" dominant-baseline="central" font-family="IM Fell English SC, Georgia, serif" font-size="${size}" fill="#1f1a17" fill-opacity=".5">${numeral}</text>
+      <path d="M30 27 Q40 19 53 20" fill="none" stroke="#efe3c8" stroke-opacity=".22" stroke-width="2.5" stroke-linecap="round"/>`;
+    return `<svg class="seal" viewBox="0 0 100 100" style="--rot:${rot}deg" aria-hidden="true">
+      <defs><clipPath id="${id}l"><path d="M-10 -10 L${cs} L-10 110 Z"/></clipPath><clipPath id="${id}r"><path d="M110 -10 L${cs} L110 110 Z"/></clipPath></defs>
+      <g class="half l" clip-path="url(#${id}l)">${face}</g><g class="half r" clip-path="url(#${id}r)">${face}</g></svg>`;
+  }
+
+  const ro = new ResizeObserver(entries => entries.forEach(e => drawWobble(e.target)));
+  function initWobbles(root = document) {
+    $$('.wobbly', root).forEach(el => { if (!el.dataset.wob) { el.dataset.wob = String(1 + Math.floor(Math.random() * 1e6)); ro.observe(el); } });
+  }
+  function wobblePath(w, h, inset, jitter, rnd) {
+    const pts = [];
+    const edge = (x0, y0, x1, y1) => {
+      const n = Math.max(2, Math.round(Math.hypot(x1 - x0, y1 - y0) / 24));
+      for (let i = 0; i < n; i++) { const k = i / n; pts.push([x0 + (x1 - x0) * k + (rnd() - .5) * jitter, y0 + (y1 - y0) * k + (rnd() - .5) * jitter]); }
+    };
+    edge(inset, inset, w - inset, inset); edge(w - inset, inset, w - inset, h - inset);
+    edge(w - inset, h - inset, inset, h - inset); edge(inset, h - inset, inset, inset);
+    const mid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], n = pts.length;
+    let m = mid(pts[n - 1], pts[0]), d = `M${f1(m[0])} ${f1(m[1])}`;
+    for (let i = 0; i < n; i++) { const c = pts[i], e = mid(pts[i], pts[(i + 1) % n]); d += ` Q${f1(c[0])} ${f1(c[1])} ${f1(e[0])} ${f1(e[1])}`; }
+    return d + 'Z';
+  }
+  function drawWobble(el) {
+    const w = el.offsetWidth, h = el.offsetHeight;
+    if (!w || !h) return;
+    const double = el.classList.contains('double');
+    let svg = el.querySelector(':scope > svg.wob');
+    if (!svg) {
+      svg = document.createElementNS(NS, 'svg');
+      svg.setAttribute('class', 'wob'); svg.setAttribute('aria-hidden', 'true');
+      for (let i = 0; i < (double ? 2 : 1); i++) svg.appendChild(document.createElementNS(NS, 'path'));
+      el.prepend(svg);
+    }
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    const rnd = mulberry32(Number(el.dataset.wob));
+    const paths = svg.querySelectorAll('path');
+    paths[0].setAttribute('d', wobblePath(w, h, 1.5, 2.6, rnd));
+    if (paths[1]) { paths[1].setAttribute('d', wobblePath(w, h, 5.5, 2.2, rnd)); paths[1].style.strokeWidth = '.8'; }
+  }
+
+  /* ---------- Sound (Web Audio, made in code) ---------- */
+  let ac = null, muted = false;
+  function unlockAudio() {
+    if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { ac = null; } }
+    if (ac && ac.state === 'suspended') ac.resume().catch(() => {});
+  }
+  const ctx = () => (!muted && ac ? ac : null);
+  function burst({ dur = .05, type = 'bandpass', freq = 3000, freqEnd = 0, q = 1, gain = .2, when = 0, attack = .003 }) {
+    const a = ctx(); if (!a) return;
+    const t = a.currentTime + when, n = Math.max(1, Math.floor(a.sampleRate * dur));
+    const buf = a.createBuffer(1, n, a.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    const src = a.createBufferSource(), fl = a.createBiquadFilter(), g = a.createGain();
+    src.buffer = buf; fl.type = type; fl.Q.value = q;
+    fl.frequency.setValueAtTime(freq, t); if (freqEnd) fl.frequency.exponentialRampToValueAtTime(freqEnd, t + dur);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + attack); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    src.connect(fl).connect(g).connect(a.destination); src.start(t); src.stop(t + dur + .02);
+  }
+  function tone({ freq, freqEnd = 0, dur = .2, type = 'sine', gain = .2, when = 0 }) {
+    const a = ctx(); if (!a) return;
+    const t = a.currentTime + when, o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t); if (freqEnd) o.frequency.exponentialRampToValueAtTime(freqEnd, t + dur);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + .03);
+  }
+  const sfx = {
+    quill: () => burst({ dur: .045, freq: 4200 + Math.random() * 2600, q: 2.4, gain: .035 }),
+    crack: () => { burst({ dur: .07, type: 'highpass', freq: 2200, q: .7, gain: .42 }); burst({ dur: .03, freq: 5200, q: 3, gain: .22, when: .03 }); tone({ freq: 95, freqEnd: 52, dur: .2, gain: .42 }); },
+    reseal: () => tone({ freq: 190, freqEnd: 120, dur: .15, type: 'triangle', gain: .12 }),
+    clink: () => { tone({ freq: 2350, dur: .24, type: 'triangle', gain: .08 }); tone({ freq: 3520, dur: .16, gain: .05 }); tone({ freq: 2790, dur: .22, type: 'triangle', gain: .07, when: .075 }); },
+    page: () => burst({ dur: .32, freq: 1600, freqEnd: 480, q: .8, gain: .11, attack: .04 }),
+    whisk: () => burst({ dur: .24, freq: 3400, freqEnd: 700, q: 1.2, gain: .18, attack: .01 }),
+    snuff: () => burst({ dur: .4, type: 'lowpass', freq: 900, freqEnd: 180, q: .5, gain: .16, attack: .02 }),
+    rumble: () => { burst({ dur: 3.4, type: 'lowpass', freq: 150, freqEnd: 60, q: .7, gain: .9, attack: .45 }); tone({ freq: 42, freqEnd: 30, dur: 3.2, gain: .26 }); tone({ freq: 63, freqEnd: 47, dur: 2.8, type: 'triangle', gain: .1, when: .2 }); },
+  };
+
+  /* ---------- Elements and state ---------- */
+  const opening = $('#opening'), tome = $('#tome'), cover = $('#cover'), nameEl = $('#recruitName');
+  const book = $('#book'), oathEl = $('#oath'), mirror = $('#mirror'), oathField = $('#oathField'), cloth = $('#cloth');
+  const leaf = $('#leaf'), cta = $('#cta'), roster = $('#roster'), rosterList = $('#rosterList');
+  const cave = $('#cave'), truth = $('#truth');
+  const st = {};
+  let timers = [], candleTimer = null, opened = false;
+  const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
+  function freshState() {
+    Object.assign(st, { phase: 'opening', name: 'The Nameless One', gold: 100, met: [], ok: {}, bribed: new Set(), view: -1,
+      pickDone: false, nightWatch: false, candleLeft: CANDLE, candleLit: false, start: null, end: null, prev: '', peeking: false, pending: false });
+  }
+  freshState();
+  const newest = () => st.met[st.met.length - 1];
+  const normalMet = () => st.met.filter(id => id < 12).length;
+  const allOk = () => st.met.length > 0 && st.met.every(id => st.ok[id]);
+  const total = () => (st.nightWatch ? 13 : 12);
+
+  function announce(msg) {
+    const box = $('#announcer'), p = document.createElement('p');
+    p.textContent = msg; box.append(p);
+    setTimeout(() => p.remove(), 7000);
+  }
+  function chronicle(msg, alarm = false) {
+    const el = $('#chronicle');
+    el.textContent = msg;
+    el.classList.remove('alarm');
+    if (alarm) { void el.offsetWidth; el.classList.add('alarm'); }
+  }
+
+  /* ---------- The oath: ink that soaks in ---------- */
+  function renderMirror(wet = null, smudgeAt = -1) {
+    const arr = chars(oathEl.value);
+    let html = '';
+    arr.forEach((c, i) => {
+      if (i === smudgeAt) html += '<span class="smudge"></span>';
+      html += (wet && i >= wet[0] && i < wet[1]) ? `<span class="wet">${esc(c)}</span>` : `<span>${esc(c)}</span>`;
+    });
+    if (smudgeAt >= arr.length) html += '<span class="smudge"></span>';
+    mirror.innerHTML = html;
+  }
+  function sizeOath() { oathEl.style.height = 'auto'; oathEl.style.height = oathEl.scrollHeight + 'px'; }
+
+  oathEl.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
+  oathEl.addEventListener('input', () => {
+    const v = oathEl.value.replace(/[\r\n]+/g, '');
+    if (v !== oathEl.value) oathEl.value = v;
+    const a = chars(st.prev), b = chars(v);
+    let pre = 0; while (pre < a.length && pre < b.length && a[pre] === b[pre]) pre++;
+    let suf = 0; while (suf < a.length - pre && suf < b.length - pre && a[a.length - 1 - suf] === b[b.length - 1 - suf]) suf++;
+    renderMirror(reduced() ? null : [pre, b.length - suf]);
+    st.prev = v; sizeOath();
+    if (v.length && !st.start) st.start = Date.now();
+    if (v.length && !st.candleLit) lightCandle();
+    sfx.quill();
+    evaluate();
+    syncOath();
+  });
+  $('#trueBtn').addEventListener('click', e => {
+    const on = !oathField.classList.contains('true');
+    oathField.classList.toggle('true', on);
+    e.currentTarget.setAttribute('aria-pressed', String(on));
+    e.currentTarget.textContent = on ? 'Show handwriting' : 'Show true letters';
+    sizeOath();
+  });
+
+  /* ---------- Rules: live checks and progress ---------- */
+  function evaluate() {
+    if (st.phase !== 'play') return;
+    const p = oathEl.value;
+    for (const id of st.met) {
+      const ok = !!ALL[id].check(p), was = st.ok[id];
+      st.ok[id] = ok;
+      if (ok && !was) { sfx.crack(); announce(`Thief the ${ORD[id]} is satisfied.`); }
+      else if (!ok && was) { sfx.reseal(); announce(`Thief the ${ORD[id]} reseals.`); chronicle(`${ALL[id].name} is unmoved once more. His seal closes again.`); }
+    }
+    paintSeals(); paintPlain(); paintCounts();
+    progress();
+  }
+  function progress() {
+    const ready = allOk(), n = normalMet();
+    cta.hidden = !(ready && n === 12 && st.phase === 'play');
+    if (!ready || st.pending || st.phase !== 'play') return;
+    if (!st.pickDone && n === 6) {
+      st.pending = true;
+      later(() => { st.pending = false; if (st.phase === 'play' && allOk() && !st.pickDone) pickpocket(); else progress(); }, reduced() ? 400 : 900);
+      return;
+    }
+    if (n < 12) {
+      st.pending = true;
+      later(() => { st.pending = false; if (st.phase === 'play' && allOk() && normalMet() === n) meet(n); else progress(); }, reduced() ? 250 : 700);
+    }
+  }
+  function meet(id) {
+    if (st.met.includes(id)) return;
+    st.met.push(id); st.ok[id] = false;
+    const t = ALL[id];
+    renderRoster(); renderLeaf(id, true);
+    sfx.page();
+    if (id !== 12) chronicle(`A page turns. ${t.name} steps out of the shadows.`);
+    announce(`A new thief steps forward: ${t.numeral}, ${t.name}.`);
+    evaluate();
+  }
+
+  function pickpocket() {
+    st.pickDone = true;
+    const arr = chars(oathEl.value);
+    if (!arr.length) return;
+    const breaks = arr.map((_, i) => i).filter(i => {
+      const s = arr.slice(0, i).concat(arr.slice(i + 1)).join('');
+      return st.met.some(id => !ALL[id].check(s));
+    });
+    const pool = breaks.length ? breaks : arr.map((_, i) => i);
+    const idx = pool[Math.floor(Math.random() * pool.length)];
+    const before = arr.slice(0, idx).join(''), removed = arr[idx];
+    const caret = oathEl.selectionStart;
+    oathEl.value = before + arr.slice(idx + 1).join('');
+    st.prev = oathEl.value;
+    const cut = before.length, nc = caret > cut ? caret - removed.length : caret;
+    if (document.activeElement === oathEl) oathEl.setSelectionRange(nc, nc);
+    renderMirror(null, reduced() ? -1 : idx); sizeOath();
+    sfx.whisk();
+    evaluate();
+    chronicle('Something in your oath feels lighter...', true);
+    announce('The Pickpocket has struck. One letter is gone from your oath.');
+    syncOath();
+  }
+
+  /* ---------- Rendering the pages ---------- */
+  function thiefHTML(t) {
+    const bribed = st.bribed.has(t.id), isNewest = t.id === newest();
+    const bribe = bribed
+      ? '<p class="paid">Ten gold changed hands. He told you plainly.</p>'
+      : `<p class="bribe-row"><button class="linkish" id="bribeBtn" type="button" ${st.gold < BRIBE ? 'disabled' : ''}>${st.gold < BRIBE ? 'Your purse is too light to bribe him.' : 'Bribe him for the plain rule — 10 gold'}</button></p>`;
+    return `<article class="thief" data-id="${t.id}" data-state="${st.ok[t.id] ? 'pass' : 'fail'}">
+      <p class="eyebrow">Thief ${t.numeral} of ${roman(total())}${t.id === 12 ? ' · woken by the dark' : ''}</p>
+      <header class="thief-head"><span class="numeral" aria-hidden="true">${t.numeral}</span><h2>${t.name}</h2></header>
+      <div class="portrait">
+        ${figureSVG(t.fig)}
+        <div class="seal-wrap">${sealSVG(t.numeral, 100 + t.id)}<p class="seal-status"></p></div>
+      </div>
+      <p class="says">He speaks:</p>
+      <p class="riddle">${esc(t.riddle)}</p>
+      <div class="plain" id="plain" tabindex="-1" ${bribed ? '' : 'hidden'}><span class="plain-label">The plain rule, bought and paid for</span><span id="plainText"></span></div>
+      ${bribe}
+      <p class="scrawl">${esc(t.note)}</p>
+      ${isNewest ? '' : '<p class="newest"><button class="linkish" id="newestBtn" type="button">Return to the newest page</button></p>'}
+      <p class="orn" aria-hidden="true">&#x2766;</p>
+    </article>`;
+  }
+  function renderLeaf(id, turn = false) {
+    st.view = id;
+    leaf.innerHTML = thiefHTML(ALL[id]);
+    const art = leaf.firstElementChild;
+    if (turn && !reduced()) art.classList.add('turning');
+    $('#bribeBtn', art)?.addEventListener('click', () => bribe(id));
+    $('#newestBtn', art)?.addEventListener('click', () => { renderLeaf(newest(), true); sfx.page(); });
+    paintSeals(); paintPlain(); markRosterCurrent();
+  }
+  function renderRoster() {
+    rosterList.innerHTML = st.met.map(id => {
+      const t = ALL[id];
+      return `<li data-id="${id}" data-state="${st.ok[id] ? 'pass' : 'fail'}"><button class="roster-entry" type="button" data-id="${id}">
+        ${sealSVG(t.numeral, 100 + id)}<span><span class="r-name"><b>${t.numeral}</b>${t.name}</span><span class="r-state"></span></span></button></li>`;
+    }).join('');
+    $$('.roster-entry', rosterList).forEach(b => b.addEventListener('click', () => {
+      if (st.phase !== 'play') return;
+      renderLeaf(Number(b.dataset.id), true); sfx.page();
+      if (!window.matchMedia('(min-width: 761px)').matches) leaf.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'start' });
+    }));
+    paintSeals(); markRosterCurrent();
+  }
+  function markRosterCurrent() {
+    $$('.roster-entry', rosterList).forEach(b => b.setAttribute('aria-current', String(Number(b.dataset.id) === st.view && st.phase === 'play')));
+  }
+  function paintSeals() {
+    $$('li', rosterList).forEach(li => {
+      const ok = !!st.ok[Number(li.dataset.id)];
+      li.dataset.state = ok ? 'pass' : 'fail';
+      li.querySelector('.r-state').textContent = ok ? 'satisfied' : 'unmoved';
+    });
+    const art = leaf.querySelector('.thief[data-id]');
+    if (art) {
+      const ok = !!st.ok[Number(art.dataset.id)];
+      art.dataset.state = ok ? 'pass' : 'fail';
+      const s = art.querySelector('.seal-status');
+      if (s) s.textContent = ok ? 'Satisfied. His seal is broken.' : 'Unmoved. His seal holds.';
+    }
+  }
+  function paintPlain() {
+    const el = $('#plainText');
+    if (el && st.bribed.has(st.view)) el.textContent = ALL[st.view].plain(oathEl.value);
+  }
+  function paintCounts() {
+    const won = st.met.filter(id => st.ok[id]).length;
+    $('#wonOver').textContent = `Thieves won over: ${won ? roman(won) : 'none'} of ${roman(total())}`;
+  }
+  function paintGold() {
+    $('#gold').textContent = st.gold;
+    const btn = $('#bribeBtn');
+    if (btn && st.gold < BRIBE) { btn.disabled = true; btn.textContent = 'Your purse is too light to bribe him.'; }
+    const peekBtn = $('#peekBtn');
+    if (peekBtn) peekBtn.disabled = st.gold < PEEK || st.peeking;
+    paintStatusLine();
+  }
+  function paintStatusLine() {
+    const mins = Math.ceil(st.candleLeft / 60);
+    const candle = !st.candleLit ? 'not yet lit' : `about ${WORDS[mins]} minute${mins === 1 ? '' : 's'}`;
+    $('#oathStatus').textContent = `Purse: ${st.gold} gold · Candle: ${candle}`;
+  }
+  function spend(n) {
+    const before = st.gold;
+    st.gold = Math.max(0, st.gold - n);
+    if (st.gold < before) sfx.clink();
+    paintGold();
+    return before - st.gold;
+  }
+  function bribe(id) {
+    if (st.gold < BRIBE || st.bribed.has(id)) return;
+    spend(BRIBE); st.bribed.add(id);
+    renderLeaf(id);
+    const pl = $('#plain');
+    if (pl) { pl.classList.add('inked'); pl.focus(); }
+    announce(`You paid ten gold. ${ALL[id].name} tells you his rule plainly.`);
+    if (online()) api('POST', `/${net.id}/bribe`, { thief: id }).then(r => { st.gold = r.gold; paintGold(); }).catch(keeperLost);
+  }
+
+  /* ---------- The keeper of the ledger: the optional server ---------- */
+  // The page plays fully offline. Only when the game's own server sends the page does it
+  // carry <meta name="ledger-api">, and only then is the oath sent anywhere.
+  const API = document.querySelector('meta[name="ledger-api"]')?.getAttribute('content') || '';
+  const net = { on: !!API, id: null, syncTimer: null, seq: 0 };
+  const online = () => net.on && !!net.id;
+  async function api(method, path, body) {
+    const res = await fetch(API + path, {
+      method,
+      headers: { 'content-type': 'application/json' },
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+    const j = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const e = new Error((j.error && j.error.message) || 'The keeper refused.');
+      Object.assign(e, { status: res.status, code: j.error && j.error.code, details: j.error && j.error.details });
+      throw e;
+    }
+    return j;
+  }
+  function goOffline() {
+    if (!net.on) return;
+    net.on = false; net.id = null; clearTimeout(net.syncTimer);
+    paintKeeper();
+    if (st.phase === 'play' || st.phase === 'captain') chronicle('The keeper of the ledger has gone quiet. You play on alone.');
+  }
+  // A request that never got an answer means the keeper has left: play on alone.
+  function keeperLost(e) {
+    if (e && e.status) return false;
+    goOffline();
+    return true;
+  }
+  function paintKeeper() {
+    $$('.warn-detail').forEach(el => { el.textContent = net.on ? "Your oath is checked by this game's own server and never stored." : 'Nothing leaves this page.'; });
+    $('#keeperLine').textContent = net.on ? 'Kept by the Army of Forty Thieves · the keeper is at his desk' : 'Kept in secret by the Army of Forty Thieves';
+  }
+  const cleanName = n => n.replace(/[^\p{L}\p{N} '’._-]/gu, '').trim().slice(0, 28);
+  function openLedgerOnServer() {
+    if (!net.on) return;
+    const name = cleanName(st.name);
+    api('POST', '/start', { name: name || undefined, tz: Intl.DateTimeFormat().resolvedOptions().timeZone })
+      .then(r => { net.id = r.gameId; st.gold = r.gold; paintGold(); if (oathEl.value) syncOath(); })
+      .catch(goOffline);
+  }
+  function syncOath() {
+    if (!online() || st.phase !== 'play') return;
+    clearTimeout(net.syncTimer);
+    net.syncTimer = setTimeout(() => {
+      const seq = ++net.seq;
+      api('POST', `/${net.id}/validate`, { oath: oathEl.value })
+        .then(r => { if (seq === net.seq && st.phase === 'play') applyCandle(r.candle); })
+        .catch(keeperLost);
+    }, 300);
+  }
+  // The server's candle is the true one; the page's candle follows it.
+  function applyCandle(c) {
+    if (!c || st.phase !== 'play') return;
+    if (c.lit && !st.candleLit) lightCandle();
+    if (c.nightWatch && !st.nightWatch) burnOut();
+    if (c.lit) st.candleLeft = c.secondsLeft;
+    paintCandle();
+  }
+  const mmss = ms => { const s = Math.round(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+  async function recordHonour() {
+    if (!online()) return;
+    try {
+      const fin = await api('POST', `/${net.id}/finish`, {});
+      const board = await api('GET', '/leaderboard?limit=5');
+      $('#honourPlace').textContent = `Your place on the roll: ${roman(fin.place)}.`;
+      let marked = false;
+      $('#honourList').innerHTML = board.entries.map(e => {
+        const you = !marked && e.name === fin.name && e.gold === fin.gold && e.elapsedMs === fin.elapsedMs;
+        if (you) marked = true;
+        return `<li${you ? ' class="you"' : ''}><b>${roman(e.place)}</b><span>${esc(e.name)} · ${esc(e.title)}</span><small>${e.gold} gold · ${mmss(e.elapsedMs)}</small></li>`;
+      }).join('');
+      $('#honour').hidden = false;
+    } catch (e) { keeperLost(e); }
+  }
+
+  /* ---------- The candle ---------- */
+  function lightCandle() {
+    st.candleLit = true;
+    $('#candle').classList.remove('unlit');
+    clearInterval(candleTimer);
+    candleTimer = setInterval(candleTick, 1000);
+    paintCandle();
+  }
+  function candleTick() {
+    if (st.phase !== 'play') { paintCandle(); return; }
+    st.candleLeft--;
+    if (st.candleLeft <= 0) burnOut();
+    paintCandle();
+  }
+  function burnOut() {
+    st.candleLeft = CANDLE;
+    const c = $('#candle');
+    c.classList.add('snuffed'); sfx.snuff();
+    later(() => c.classList.remove('snuffed'), 2000);
+    if (!st.nightWatch) {
+      st.nightWatch = true;
+      announce('The candle has burned out. Thief the Thirteenth, the Night Watch, wakes.');
+      meet(12);
+      chronicle('The candle gutters out. In the dark, the Night Watch wakes.', true);
+    } else {
+      chronicle('The candle burns down again. You light another from its stub.');
+    }
+  }
+  function paintCandle() {
+    const h = 4 + 78 * st.candleLeft / CANDLE, y = 112 - h;
+    $('#wax').setAttribute('y', f1(y)); $('#wax').setAttribute('height', f1(h));
+    $('#wick').setAttribute('y1', f1(y - 4)); $('#wick').setAttribute('y2', f1(y));
+    $('#flameGroup').setAttribute('transform', `translate(30 ${f1(y - 4)})`);
+    $('#smoke').setAttribute('transform', `translate(0 ${f1(y - 30)})`);
+    const mins = Math.ceil(st.candleLeft / 60);
+    let text;
+    if (!st.candleLit) text = 'A fresh candle. It lights with your first word.';
+    else if (st.phase === 'captain') text = 'The candle waits while the Captain listens.';
+    else if (st.candleLeft <= 60) text = 'The wick is nearly drowned in wax.';
+    else text = `About ${WORDS[mins]} minutes of wax remain.`;
+    $('#candleText').textContent = text;
+    $('#candleSvg').setAttribute('aria-label', st.candleLit ? `A burning candle. ${text}` : 'An unlit candle');
+    paintStatusLine();
+  }
+
+  /* ---------- The Captain's oath ---------- */
+  function setCovered(on) {
+    oathField.classList.toggle('covered', on);
+    cloth.hidden = !on;
+  }
+  async function presentToCaptain() {
+    if (st.phase !== 'play' || !(allOk() && normalMet() === 12)) return;
+    if (online()) {
+      const btn = $('#captainBtn');
+      btn.disabled = true; clearTimeout(net.syncTimer);
+      try {
+        const r = await api('POST', `/${net.id}/captain`, { oath: oathEl.value });
+        btn.disabled = false;
+        applyCandle(r.candle);
+      } catch (e) {
+        btn.disabled = false;
+        if (e.code === 'OATH_NOT_READY') {
+          applyCandle(e.details && e.details.candle);
+          chronicle('The Captain shakes his head. One of his thieves is not yet satisfied.', true);
+          return;
+        }
+        if (!keeperLost(e)) { chronicle(e.message, true); return; }
+      }
+    }
+    toCaptain();
+  }
+  function toCaptain() {
+    if (!(allOk() && normalMet() === 12)) return;
+    st.phase = 'captain';
+    cta.hidden = true; oathEl.disabled = true; setCovered(true);
+    st.view = -1; markRosterCurrent();
+    leaf.innerHTML = `<article class="thief captain" data-state="fail">
+      <p class="eyebrow">The last test</p>
+      <header class="thief-head"><span class="numeral" aria-hidden="true">XL</span><h2>The Captain</h2></header>
+      <div class="portrait">${figureSVG(CAPTAIN_FIG)}<div class="seal-wrap">${sealSVG('XL', 40)}<p class="seal-status">His seal is never broken lightly.</p></div></div>
+      <p class="says">He speaks:</p>
+      <p class="riddle">So. You have charmed my thieves. Now swear the oath again, from memory, for I have covered the page. Every recruit swears twice, like every honest gatekeeper in the land demands.</p>
+      <form class="swear" id="swearForm" novalidate>
+        <label for="swear">Swear the oath again</label>
+        <input id="swear" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true">
+        <p class="verdict" id="verdict" aria-live="polite"></p>
+        <div class="swear-actions">
+          <button class="tab wobbly" type="submit">Swear it</button>
+          <button class="stamp wobbly" type="button" id="peekBtn">Peek at the ledger for 3 seconds — 25 gold</button>
+        </div>
+        <p><button class="linkish" type="button" id="backBtn">Go back and rewrite my oath</button></p>
+      </form>
+      <p class="scrawl">he made me swear four times.</p>
+    </article>`;
+    if (!reduced()) leaf.firstElementChild.classList.add('turning');
+    initWobbles(leaf);
+    const sw = $('#swear');
+    const refuse = e => { e.preventDefault(); verdict('The Captain catches your sleeve. “An oath is sworn by heart, not pasted in.”'); };
+    sw.addEventListener('paste', refuse);
+    sw.addEventListener('drop', refuse);
+    sw.addEventListener('dragover', e => e.preventDefault());
+    sw.addEventListener('beforeinput', e => { if (e.inputType === 'insertFromPaste' || e.inputType === 'insertFromDrop' || e.inputType === 'insertFromPasteAsQuotation') refuse(e); });
+    $('#swearForm').addEventListener('submit', e => { e.preventDefault(); swear(); });
+    $('#peekBtn').addEventListener('click', peek);
+    $('#backBtn').addEventListener('click', backToThieves);
+    paintGold(); paintCandle();
+    sfx.page();
+    chronicle('The Captain lays a cloth over your oath.');
+    announce('The Captain asks you to swear your oath again from memory.');
+    sw.focus();
+  }
+  function verdict(msg) { const v = $('#verdict'); if (v) v.textContent = msg; }
+  let swearing = false;
+  async function swear() {
+    const sw = $('#swear');
+    const typed = chars(sw.value), want = chars(oathEl.value);
+    if (!typed.length) { verdict('You said nothing at all. The Captain waits.'); sw.focus(); return; }
+    if (swearing) return;
+    if (online()) {
+      swearing = true;
+      try {
+        const r = await api('POST', `/${net.id}/swear`, { oath: oathEl.value, attempt: sw.value });
+        if (st.phase !== 'captain') return;
+        if (r.won) { st.gold = r.gold; win(); return; }
+        if (r.paid) sfx.clink();
+        st.gold = r.gold; paintGold();
+        missed(r.correct, r.total, r.saidTooMuch, r.paid);
+        return;
+      } catch (e) {
+        if (!keeperLost(e)) { verdict(e.message); return; }
+      } finally { swearing = false; }
+    }
+    if (typed.join('') === want.join('')) { win(); return; }
+    let k = 0; while (k < typed.length && k < want.length && typed[k] === want[k]) k++;
+    missed(k, want.length, k === want.length && typed.length > want.length, spend(MISS));
+  }
+  function missed(k, total, saidTooMuch, paid) {
+    const cost = paid ? ` It costs you ${paid} gold.` : ' Your purse is empty, so he takes nothing.';
+    verdict((saidTooMuch
+      ? `The Captain frowns. All ${total} letters were true, but then you kept talking.`
+      : `The Captain frowns. Your first ${k} of ${total} letters were true.`) + cost);
+    const sw = $('#swear');
+    sw.value = ''; sw.focus();
+  }
+  function peek() {
+    if (st.peeking) return;
+    if (st.gold < PEEK) { verdict('Your purse is too light for a peek.'); return; }
+    spend(PEEK); st.peeking = true; setCovered(false); paintGold();
+    if (online()) api('POST', `/${net.id}/peek`).then(r => { st.gold = r.gold; paintGold(); }).catch(keeperLost);
+    verdict('The Captain lifts the cloth for three heartbeats.');
+    later(() => {
+      st.peeking = false;
+      if (st.phase !== 'captain') return;
+      setCovered(true); paintGold(); verdict('The cloth falls again.');
+      $('#swear')?.focus();
+    }, 3000);
+  }
+  function backToThieves() {
+    st.phase = 'play'; st.peeking = false;
+    setCovered(false); oathEl.disabled = false;
+    renderLeaf(newest(), true); sfx.page();
+    chronicle('You return to your oath. The Captain will wait.');
+    evaluate(); paintCandle(); oathEl.focus();
+    if (online()) api('POST', `/${net.id}/back`).then(r => applyCandle(r.candle)).catch(keeperLost);
+  }
+
+  /* ---------- Victory ---------- */
+  function rankFor(g) { return g >= 90 ? 'Ali Baba himself' : g >= 60 ? 'Clever Morgiana' : g >= 30 ? 'Honest Woodcutter' : 'Greedy Kasim'; }
+  function duration(ms) {
+    const s = Math.max(1, Math.round(ms / 1000)), m = Math.floor(s / 60), r = s % 60;
+    const sec = `${r} second${r === 1 ? '' : 's'}`;
+    return m ? `${m} minute${m === 1 ? '' : 's'}${r ? ' and ' + sec : ''}` : sec;
+  }
+  function win() {
+    st.phase = 'won'; st.end = Date.now();
+    clearInterval(candleTimer);
+    const p = $('#proclaim');
+    p.textContent = '';
+    p.append('Let it be known that ');
+    const b = document.createElement('b'); b.textContent = st.name; p.append(b);
+    p.append(` was sworn into the Army of Forty Thieves in ${duration(st.end - (st.start || st.end))}, keeping ${st.gold} gold.`);
+    $('#rankBox').innerHTML = `${sealSVG('XL', 41)}<p><small>By the gold in your purse, the Army names you</small><strong>${rankFor(st.gold)}</strong></p>`;
+    $('#rankBox').dataset.state = 'pass';
+    document.body.classList.add('locked');
+    cave.hidden = false;
+    initWobbles(cave);
+    announce(`The stone door opens. You are sworn in, ${st.name}. Your rank is ${rankFor(st.gold)}.`);
+    sfx.rumble();
+    recordHonour();
+    if (reduced()) { cave.classList.add('opened', 'unrolled'); $('#truthBtn').focus(); return; }
+    later(() => cave.classList.add('opened'), 300);
+    later(() => cave.classList.add('unrolled'), 2500);
+    later(() => $('#truthBtn').focus({ preventScroll: true }), 3700);
+  }
+  $('#truthBtn').addEventListener('click', () => {
+    truth.hidden = false; initWobbles(truth); truth.scrollTop = 0; sfx.page();
+    $('#truthTitle').focus();
+  });
+  $('#backDecreeBtn').addEventListener('click', () => { truth.hidden = true; $('#truthBtn').focus(); });
+  $('#againBtn').addEventListener('click', resetAll);
+  $('#againBtn2').addEventListener('click', resetAll);
+
+  /* ---------- Opening scene ---------- */
+  function openCover() {
+    unlockAudio();
+    if (opened) return;
+    opened = true;
+    const done = () => { cover.hidden = true; $('#skipBtn').hidden = true; nameEl.focus(); };
+    if (reduced()) { tome.classList.add('open'); done(); return; }
+    tome.classList.add('open'); sfx.page();
+    later(done, 1100);
+  }
+  function skipOpening() {
+    unlockAudio(); opened = true;
+    tome.classList.add('open'); cover.hidden = true; $('#skipBtn').hidden = true; nameEl.focus();
+  }
+  $('#captainBtn').addEventListener('click', presentToCaptain);
+  cover.addEventListener('click', openCover);
+  $('#skipBtn').addEventListener('click', skipOpening);
+  $('#nameForm').addEventListener('submit', e => { e.preventDefault(); unlockAudio(); startGame(); });
+
+  function startGame() {
+    st.name = nameEl.value.trim() || 'The Nameless One';
+    opening.hidden = true; book.hidden = false; st.phase = 'play';
+    roster.open = window.matchMedia('(min-width: 761px)').matches;
+    initWobbles(document);
+    paintGold(); paintCandle(); paintCounts();
+    meet(0);
+    chronicle(`${st.name} dips the quill. The Gatekeeper watches.`);
+    openLedgerOnServer();
+    window.scrollTo(0, 0);
+    oathEl.focus({ preventScroll: true });
+  }
+
+  function resetAll() {
+    timers.forEach(clearTimeout); timers = [];
+    clearInterval(candleTimer); candleTimer = null;
+    clearTimeout(net.syncTimer); net.seq++; net.id = null; net.on = !!API;
+    $('#honour').hidden = true; paintKeeper();
+    freshState();
+    oathEl.value = ''; oathEl.disabled = false; mirror.innerHTML = ''; setCovered(false);
+    leaf.innerHTML = ''; rosterList.innerHTML = ''; cta.hidden = true; chronicle('');
+    $('#candle').className = 'candle unlit';
+    paintGold(); paintCandle(); paintCounts();
+    cave.hidden = true; cave.classList.remove('opened', 'unrolled'); truth.hidden = true;
+    document.body.classList.remove('locked');
+    book.hidden = true; opening.hidden = false;
+    tome.classList.remove('open'); cover.hidden = false; $('#skipBtn').hidden = false; opened = false; nameEl.value = '';
+    window.scrollTo(0, 0);
+    cover.focus();
+  }
+
+  /* ---------- Sound toggle ---------- */
+  $('#muteBtn').addEventListener('click', e => {
+    unlockAudio();
+    muted = !muted;
+    e.currentTarget.textContent = muted ? 'Sound · off' : 'Sound · on';
+    e.currentTarget.setAttribute('aria-label', muted ? 'Turn sound on' : 'Mute sound');
+  });
+
+  /* ---------- Keyboard: opening keys and the hidden demo key ---------- */
+  function demoOath() {
+    let s = `XL ${weekday()} steps on the map, piano, cumin, emases, $ dawn 99994`;
+    while (!isPrime(len(s))) s += '.';
+    return s;
+  }
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === 'j') {
+      if (st.phase === 'play') { e.preventDefault(); oathEl.value = demoOath(); oathEl.dispatchEvent(new Event('input')); oathEl.focus(); }
+      else if (st.phase === 'captain') { e.preventDefault(); const sw = $('#swear'); if (sw) { sw.value = oathEl.value; sw.focus(); } }
+      return;
+    }
+    if (st.phase === 'opening' && !cover.hidden) {
+      if (e.key === 'Escape') { e.preventDefault(); skipOpening(); }
+      else if (e.key === 'Enter' && (document.activeElement === document.body || document.activeElement === cover)) { e.preventDefault(); openCover(); }
+    }
+  });
+
+  /* ---------- Start ---------- */
+  initWobbles(document);
+  paintKeeper(); paintGold(); paintCandle(); paintCounts();
+})();
+</script>
+</body>
+</html>
